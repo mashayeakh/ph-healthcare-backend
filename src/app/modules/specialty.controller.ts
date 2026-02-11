@@ -16,4 +16,12 @@ export const SpecialtyController = {
             data: created,
         });
     },
+    viewAllSpecialty: async (req: Request, res: Response) => {
+
+        res.status(201).json({
+            success: true,
+            message: "Specialty created successfully",
+            data: await SpecialtyService.getAllSpecialty(),
+        });
+    },
 };

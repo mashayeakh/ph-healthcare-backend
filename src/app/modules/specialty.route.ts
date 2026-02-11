@@ -5,4 +5,6 @@ const route = express();
 
 route.post("/", SpecialtyController.specialtyCreate);
 
+route.get("/", SpecialtyController.viewAllSpecialty);
+
 export const SpecialtyRouter = route;
