@@ -5,6 +5,10 @@ const route = express();
 
 route.post("/", SpecialtyController.specialtyCreate);
 
-route.get("/", SpecialtyController.viewAllSpecialty);
+route.get("/", SpecialtyController.getAllSpecialty);
+
+route.delete("/:id", SpecialtyController.deleteSpecialty);
+
+
 
 export const SpecialtyRouter = route;

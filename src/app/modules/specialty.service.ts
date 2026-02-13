@@ -12,5 +12,14 @@ export const SpecialtyService = {
     //! view all specialty
     async getAllSpecialty() {
         return await prisma.specialty.findMany()
+    },
+
+    //! delete specific specialty
+    async deleteSepcialty(id: string) {
+        return await prisma.specialty.delete({
+            where: {
+                id: id
+            }
+        });
     }
 }
