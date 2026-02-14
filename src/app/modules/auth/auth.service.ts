@@ -1,6 +1,6 @@
-import { Specialty } from "../../generated/prisma/client/client";
-import { prisma } from "../lib/prisma";
-import { SpecialtyType, UpdateSpecialType } from "../types/specialtyDto";
+import { prisma } from "../../lib/prisma";
+import { SpecialtyType, UpdateSpecialType } from "../../types/specialtyDto";
+
 
 export const SpecialtyService = {
     //!create specialty

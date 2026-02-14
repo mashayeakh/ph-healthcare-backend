@@ -1,9 +1,8 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
-import { prisma } from "../lib/prisma"
-import { SpecialtyType } from "../types/specialtyDto";
-import { SpecialtyService } from './specialty.service';
-import { catchAsyc } from "../shared/catchAsync";
+
 import { count } from "node:console";
+import { SpecialtyService } from "./specialty.service";
+import { catchAsyc } from "../../shared/catchAsync";
 
 
 interface IResponseData<T> {
