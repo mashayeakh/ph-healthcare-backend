@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma";
-import { SpecialtyType, UpdateSpecialType } from "../../types/specialtyDto";
+import { SpecialtyType, UpdateSpecialType } from "./dto/specialtyDto";
 
 
 export const SpecialtyService = {

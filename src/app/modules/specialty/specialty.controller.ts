@@ -3,32 +3,7 @@ import { NextFunction, Request, RequestHandler, Response } from "express";
 import { count } from "node:console";
 import { SpecialtyService } from "./specialty.service";
 import { catchAsyc } from "../../shared/catchAsync";
-
-
-interface IResponseData<T> {
-    httpStatusCode: number,
-    success: boolean,
-    message: string,
-    result?: T;
-}
-
-
-//send Response
-const sendResponse = <T>(res: Response, responseData: IResponseData<T>) => {
-    const {
-        httpStatusCode,
-        success,
-        message,
-        result
-    } = responseData;
-
-    res.status(httpStatusCode).json({
-        success,
-        message,
-        result
-    })
-}
-
+import { sendResponse } from "../../utils/sendResponse";
 
 
 export const SpecialtyController = {

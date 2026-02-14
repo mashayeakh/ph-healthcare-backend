@@ -1,34 +1,35 @@
+import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
-import { SpecialtyType, UpdateSpecialType } from "../../types/specialtyDto";
+import { SpecialtyType, UpdateSpecialType } from "../specialty/dto/specialtyDto";
+import { Request, Response } from "express";
 
 
-export const SpecialtyService = {
-    //!create specialty
-    async createSpecialty(payload: SpecialtyType) {
-        console.log("**payload coming from db", payload);
-        return await prisma.specialty.create({ data: payload });
-    },
+export const AuthService = {
 
-    //! view all specialty
-    async getAllSpecialty() {
-        return await prisma.specialty.findMany()
-    },
+    //! patient registration 
+    async registerPatient(payload: IRegisterPatientPayload, res: Response) {
+        const {
+            name,
+            email,
+            password
+        } = payload;
 
-    //! delete specific specialty
-    async deleteSepcialty(id: string) {
-        return await prisma.specialty.delete({
-            where: {
-                id: id
+        //using better auth signupEmail api to create
+        const data = await auth.api.signUpEmail({
+            body: {
+                name,
+                email,
+                password
             }
         });
-    },
 
-    //! edit specific specialty
-    async editSpecialty(id: string, payload: UpdateSpecialType) {
-        return await prisma.specialty.update({
-            where: {
-                id: id
-            }, data: payload
-        })
+        if (!data.user) {
+            throw new Error("Failed to register patient");
+        }
+        console.log("***DATA ", data)
+
+        //TODO - we will create profile of patient once we finish with patient prisma
+        return data;
     }
+
 }
