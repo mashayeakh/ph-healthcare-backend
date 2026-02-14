@@ -7,6 +7,13 @@ export type SpecialtyType = {
     updatedAt: string;
     isDeleted: boolean;
     deletedAt: string | null;
-
-
 }
+
+
+
+export type UpdateSpecialType = {
+    id?: string,
+    title?: string,
+    description?: string | null,
+    icon?: string | null;
+} 

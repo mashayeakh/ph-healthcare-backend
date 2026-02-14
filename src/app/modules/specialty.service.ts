@@ -1,6 +1,6 @@
 import { Specialty } from "../../generated/prisma/client/client";
 import { prisma } from "../lib/prisma";
-import { SpecialtyType } from "../types/specialty";
+import { SpecialtyType, UpdateSpecialType } from "../types/specialtyDto";
 
 export const SpecialtyService = {
     //!create specialty
@@ -21,5 +21,14 @@ export const SpecialtyService = {
                 id: id
             }
         });
+    },
+
+    //! edit specific specialty
+    async editSpecialty(id: string, payload: UpdateSpecialType) {
+        return await prisma.specialty.update({
+            where: {
+                id: id
+            }, data: payload
+        })
     }
 }

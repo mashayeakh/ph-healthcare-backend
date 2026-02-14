@@ -1,23 +1,33 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { prisma } from "../lib/prisma"
-import { SpecialtyType } from "../types/specialty";
+import { SpecialtyType } from "../types/specialtyDto";
 import { SpecialtyService } from './specialty.service';
+import { catchAsyc } from "../shared/catchAsync";
+import { count } from "node:console";
 
 
-const catchAsyc = (fn: RequestHandler) => {
-    return async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            await fn(req, res, next);
-        } catch (error: any) {
-            console.log(error)
-            res.status(500).json({
-                success: false,
-                message: "Failed to fetch ",
-                error: error.message
-            })
-        }
-    }
+interface IResponseData<T> {
+    httpStatusCode: number,
+    success: boolean,
+    message: string,
+    result?: T;
+}
 
+
+//send Response
+const sendResponse = <T>(res: Response, responseData: IResponseData<T>) => {
+    const {
+        httpStatusCode,
+        success,
+        message,
+        result
+    } = responseData;
+
+    res.status(httpStatusCode).json({
+        success,
+        message,
+        result
+    })
 }
 
 
@@ -38,58 +48,49 @@ export const SpecialtyController = {
 
 
     //!get specialty
-
-    // getAllSpecialty: async (req: Request, res: Response) => {
-    //     try {
-    //         const result = await SpecialtyService.getAllSpecialty()
-    //         res.status(201).json({
-    //             success: true,
-    //             message: "Specialty created successfully",
-    //             result: {
-    //                 count: result.length,
-    //                 data: result
-    //             },
-    //         });
-    //     } catch (error: any) {
-    //         console.log(error)
-    //         res.status(500).json({
-    //             success: false,
-    //             message: "Failed to fetch specialty",
-    //             error: error.message
-    //         })
-    //     }
-    // },
     getAllSpecialty: catchAsyc(
         async (req: Request, res: Response) => {
-            const result = await SpecialtyService.getAllSpecialty()
-            res.status(201).json({
+            const _result = await SpecialtyService.getAllSpecialty()
+
+            sendResponse(res, {
+                httpStatusCode: 201,
                 success: true,
-                message: "Specialty created successfully!!",
+                message: "Specialty fetched successfully!!",
                 result: {
-                    count: result.length,
-                    data: result
-                },
-            });
+                    count: _result.length,
+                    data: _result
+                }
+            })
         }
     ),
 
 
     //!delete specialty
-
-    deleteSpecialty: async (req: Request, res: Response) => {
-        try {
-            res.status(201).json({
+    deleteSpecialty: catchAsyc(
+        async (req: Request, res: Response) => {
+            // const result = await SpecialtyService.deleteSepcialty(req.params.id as string)
+            res.status(200).json({
                 success: true,
-                message: "Specialty deleted successfully",
-                data: await SpecialtyService.deleteSepcialty(req.params.id as string),
-            });
-        } catch (error: any) {
-            console.log(error)
-            res.status(500).json({
-                success: false,
-                message: "Failed to delete specialty",
-                error: error.message
+                message: "Specialty deleted Succesfully",
+                data: await SpecialtyService.deleteSepcialty(req.params.id as string)
+            })
+
+        }
+    ),
+
+
+    //!edit specialty
+    editSpecialty: catchAsyc(
+        async (req: Request, res: Response) => {
+            const payload = req.body;
+            const { id } = req.params;
+            console.log("specialty to be edited", payload);
+            console.log("specialty id found", id);
+            res.status(200).json({
+                success: true,
+                message: "Edited successfully",
+                data: await SpecialtyService.editSpecialty(id as string, payload)
             })
         }
-    }
+    )
 };

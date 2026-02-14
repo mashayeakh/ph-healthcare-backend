@@ -3,11 +3,25 @@ import { SpecialtyController } from './specialty.controller';
 const route = express();
 
 
-route.post("/", SpecialtyController.specialtyCreate);
+route.post(
+    "/",
+    SpecialtyController.specialtyCreate
+);
 
-route.get("/", SpecialtyController.getAllSpecialty);
+route.get(
+    "/",
+    SpecialtyController.getAllSpecialty
+);
 
-route.delete("/:id", SpecialtyController.deleteSpecialty);
+route.delete(
+    "/:id",
+    SpecialtyController.deleteSpecialty
+);
+
+route.put(
+    "/:id",
+    SpecialtyController.editSpecialty
+)
 
 
 
