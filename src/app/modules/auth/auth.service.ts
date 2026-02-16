@@ -27,15 +27,30 @@ export const AuthService = {
         if (!data.user) {
             throw new Error("Failed to register patient");
         }
-        console.log("***DATA ", data)
 
-        //TODO - we will create profile of patient once we finish with patient prisma
-        return data;
+        //since by default user is patient, we want once he is registered, his profile will be created automatically, without that, the profile wont be created. 
+        const patient = await prisma.$transaction(async (tx) => {
+            //create the patient
+            return await tx.patient.create({
+                //what to put in the profile, we will define here
+                data: {
+                    userId: data.user.id,
+                    name: payload.name,
+                    email: payload.email,
+                }
+            })
+        })
+
+        return {
+            ...data,
+            patient
+        };
     },
 
 
+
+
     async loginPatient(payload: ILoginUserPayload) {
-        console.log("*login data  = ", payload)
 
         const { email, password } = payload
 
@@ -53,8 +68,6 @@ export const AuthService = {
         }
 
         //you can do some other verification as well. 
-
-
         return data;
     }
 

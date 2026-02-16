@@ -4,6 +4,7 @@ import { formatInTimeZone } from 'date-fns-tz';
 import route from './app/routes';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import { envVars } from './app/config/env';
 
 export const app: Application = express()
 
@@ -13,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Middleware to parse JSON bodies
 app.use(cors({
-    origin: process.env.BETTER_AUTH_URL || 'http://localhost:5000',
+    origin: process.env.BETTER_AUTH_URL || `http://localhost:${envVars.PORT}`,
     credentials: true // Important for cookies
 }));
 
