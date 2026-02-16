@@ -39,7 +39,6 @@ export const AuthController = {
 
     loginUser: catchAsyc(
         async (req: Request, res: Response) => {
-            console.log("**Controller hit ",)
             sendResponse(res, {
                 httpStatusCode: 200,
                 success: true,

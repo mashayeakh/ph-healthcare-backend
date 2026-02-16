@@ -52,6 +52,8 @@ export const AuthService = {
             throw new Error("User is blocked");
         }
 
+        //you can do some other verification as well. 
+
 
         return data;
     }
