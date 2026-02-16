@@ -5,8 +5,13 @@ const route = express();
 
 //!create patient
 route.post(
-    "/patient",
+    "/patient/register",
     AuthController.createPatient
+);
+
+route.post(
+    "/patient/login",
+    AuthController.loginUser
 )
 
 

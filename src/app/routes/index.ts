@@ -5,10 +5,12 @@ import { AuthRouter } from '../modules/auth/auth.route';
 const route = express();
 
 
+//!specialty
 route.use(
     "/specialty",
     SpecialtyRouter
 );
+
 //!auth
 route.use(
     "/auth",

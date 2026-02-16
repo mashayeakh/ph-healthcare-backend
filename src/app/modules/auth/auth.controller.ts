@@ -17,7 +17,6 @@ export const AuthController = {
      */
     createPatient: async (req: Request, res: Response) => {
 
-
         const data = await AuthService.registerPatient(req.body, res)
 
         if (data.token) {
@@ -36,6 +35,18 @@ export const AuthController = {
             message: "Patient Registered successfully",
             result: data
         })
-    }
+    },
+
+    loginUser: catchAsyc(
+        async (req: Request, res: Response) => {
+            console.log("**Controller hit ",)
+            sendResponse(res, {
+                httpStatusCode: 200,
+                success: true,
+                message: "User logged in successfully",
+                result: await AuthService.loginPatient(req.body)
+            })
+        }
+    )
 
 };
