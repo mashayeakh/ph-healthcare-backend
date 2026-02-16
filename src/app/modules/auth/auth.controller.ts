@@ -4,6 +4,7 @@ import { count } from "node:console";
 import { catchAsyc } from "../../shared/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { AuthService } from "./auth.service";
+import status from "http-status";
 
 
 
@@ -30,7 +31,7 @@ export const AuthController = {
 
 
         sendResponse(res, {
-            httpStatusCode: 201,
+            httpStatusCode: status.CREATED,
             success: true,
             message: "Patient Registered successfully",
             result: data
@@ -40,7 +41,7 @@ export const AuthController = {
     loginUser: catchAsyc(
         async (req: Request, res: Response) => {
             sendResponse(res, {
-                httpStatusCode: 200,
+                httpStatusCode: status.OK,
                 success: true,
                 message: "User logged in successfully",
                 result: await AuthService.loginPatient(req.body)
