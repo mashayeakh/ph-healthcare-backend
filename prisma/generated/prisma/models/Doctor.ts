@@ -28,13 +28,13 @@ export type AggregateDoctor = {
 
 export type DoctorAvgAggregateOutputType = {
   experience: number | null
-  appiontmentFee: number | null
+  appointmentFee: number | null
   avgRating: number | null
 }
 
 export type DoctorSumAggregateOutputType = {
   experience: number | null
-  appiontmentFee: number | null
+  appointmentFee: number | null
   avgRating: number | null
 }
 
@@ -48,7 +48,7 @@ export type DoctorMinAggregateOutputType = {
   registrationNumber: string | null
   experience: number | null
   gender: $Enums.DoctorGender | null
-  appiontmentFee: number | null
+  appointmentFee: number | null
   qualification: string | null
   currentWorkingPlace: string | null
   designation: string | null
@@ -70,7 +70,7 @@ export type DoctorMaxAggregateOutputType = {
   registrationNumber: string | null
   experience: number | null
   gender: $Enums.DoctorGender | null
-  appiontmentFee: number | null
+  appointmentFee: number | null
   qualification: string | null
   currentWorkingPlace: string | null
   designation: string | null
@@ -92,7 +92,7 @@ export type DoctorCountAggregateOutputType = {
   registrationNumber: number
   experience: number
   gender: number
-  appiontmentFee: number
+  appointmentFee: number
   qualification: number
   currentWorkingPlace: number
   designation: number
@@ -108,13 +108,13 @@ export type DoctorCountAggregateOutputType = {
 
 export type DoctorAvgAggregateInputType = {
   experience?: true
-  appiontmentFee?: true
+  appointmentFee?: true
   avgRating?: true
 }
 
 export type DoctorSumAggregateInputType = {
   experience?: true
-  appiontmentFee?: true
+  appointmentFee?: true
   avgRating?: true
 }
 
@@ -128,7 +128,7 @@ export type DoctorMinAggregateInputType = {
   registrationNumber?: true
   experience?: true
   gender?: true
-  appiontmentFee?: true
+  appointmentFee?: true
   qualification?: true
   currentWorkingPlace?: true
   designation?: true
@@ -150,7 +150,7 @@ export type DoctorMaxAggregateInputType = {
   registrationNumber?: true
   experience?: true
   gender?: true
-  appiontmentFee?: true
+  appointmentFee?: true
   qualification?: true
   currentWorkingPlace?: true
   designation?: true
@@ -172,7 +172,7 @@ export type DoctorCountAggregateInputType = {
   registrationNumber?: true
   experience?: true
   gender?: true
-  appiontmentFee?: true
+  appointmentFee?: true
   qualification?: true
   currentWorkingPlace?: true
   designation?: true
@@ -281,7 +281,7 @@ export type DoctorGroupByOutputType = {
   registrationNumber: string
   experience: number
   gender: $Enums.DoctorGender
-  appiontmentFee: number
+  appointmentFee: number
   qualification: string
   currentWorkingPlace: string
   designation: string
@@ -326,7 +326,7 @@ export type DoctorWhereInput = {
   registrationNumber?: Prisma.StringFilter<"Doctor"> | string
   experience?: Prisma.IntFilter<"Doctor"> | number
   gender?: Prisma.EnumDoctorGenderFilter<"Doctor"> | $Enums.DoctorGender
-  appiontmentFee?: Prisma.FloatFilter<"Doctor"> | number
+  appointmentFee?: Prisma.FloatFilter<"Doctor"> | number
   qualification?: Prisma.StringFilter<"Doctor"> | string
   currentWorkingPlace?: Prisma.StringFilter<"Doctor"> | string
   designation?: Prisma.StringFilter<"Doctor"> | string
@@ -350,7 +350,7 @@ export type DoctorOrderByWithRelationInput = {
   registrationNumber?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   gender?: Prisma.SortOrder
-  appiontmentFee?: Prisma.SortOrder
+  appointmentFee?: Prisma.SortOrder
   qualification?: Prisma.SortOrder
   currentWorkingPlace?: Prisma.SortOrder
   designation?: Prisma.SortOrder
@@ -378,7 +378,7 @@ export type DoctorWhereUniqueInput = Prisma.AtLeast<{
   address?: Prisma.StringFilter<"Doctor"> | string
   experience?: Prisma.IntFilter<"Doctor"> | number
   gender?: Prisma.EnumDoctorGenderFilter<"Doctor"> | $Enums.DoctorGender
-  appiontmentFee?: Prisma.FloatFilter<"Doctor"> | number
+  appointmentFee?: Prisma.FloatFilter<"Doctor"> | number
   qualification?: Prisma.StringFilter<"Doctor"> | string
   currentWorkingPlace?: Prisma.StringFilter<"Doctor"> | string
   designation?: Prisma.StringFilter<"Doctor"> | string
@@ -401,7 +401,7 @@ export type DoctorOrderByWithAggregationInput = {
   registrationNumber?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   gender?: Prisma.SortOrder
-  appiontmentFee?: Prisma.SortOrder
+  appointmentFee?: Prisma.SortOrder
   qualification?: Prisma.SortOrder
   currentWorkingPlace?: Prisma.SortOrder
   designation?: Prisma.SortOrder
@@ -431,7 +431,7 @@ export type DoctorScalarWhereWithAggregatesInput = {
   registrationNumber?: Prisma.StringWithAggregatesFilter<"Doctor"> | string
   experience?: Prisma.IntWithAggregatesFilter<"Doctor"> | number
   gender?: Prisma.EnumDoctorGenderWithAggregatesFilter<"Doctor"> | $Enums.DoctorGender
-  appiontmentFee?: Prisma.FloatWithAggregatesFilter<"Doctor"> | number
+  appointmentFee?: Prisma.FloatWithAggregatesFilter<"Doctor"> | number
   qualification?: Prisma.StringWithAggregatesFilter<"Doctor"> | string
   currentWorkingPlace?: Prisma.StringWithAggregatesFilter<"Doctor"> | string
   designation?: Prisma.StringWithAggregatesFilter<"Doctor"> | string
@@ -453,7 +453,7 @@ export type DoctorCreateInput = {
   registrationNumber: string
   experience?: number
   gender: $Enums.DoctorGender
-  appiontmentFee: number
+  appointmentFee: number
   qualification: string
   currentWorkingPlace: string
   designation: string
@@ -476,7 +476,7 @@ export type DoctorUncheckedCreateInput = {
   registrationNumber: string
   experience?: number
   gender: $Enums.DoctorGender
-  appiontmentFee: number
+  appointmentFee: number
   qualification: string
   currentWorkingPlace: string
   designation: string
@@ -499,7 +499,7 @@ export type DoctorUpdateInput = {
   registrationNumber?: Prisma.StringFieldUpdateOperationsInput | string
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   gender?: Prisma.EnumDoctorGenderFieldUpdateOperationsInput | $Enums.DoctorGender
-  appiontmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  appointmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
   qualification?: Prisma.StringFieldUpdateOperationsInput | string
   currentWorkingPlace?: Prisma.StringFieldUpdateOperationsInput | string
   designation?: Prisma.StringFieldUpdateOperationsInput | string
@@ -522,7 +522,7 @@ export type DoctorUncheckedUpdateInput = {
   registrationNumber?: Prisma.StringFieldUpdateOperationsInput | string
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   gender?: Prisma.EnumDoctorGenderFieldUpdateOperationsInput | $Enums.DoctorGender
-  appiontmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  appointmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
   qualification?: Prisma.StringFieldUpdateOperationsInput | string
   currentWorkingPlace?: Prisma.StringFieldUpdateOperationsInput | string
   designation?: Prisma.StringFieldUpdateOperationsInput | string
@@ -545,7 +545,7 @@ export type DoctorCreateManyInput = {
   registrationNumber: string
   experience?: number
   gender: $Enums.DoctorGender
-  appiontmentFee: number
+  appointmentFee: number
   qualification: string
   currentWorkingPlace: string
   designation: string
@@ -567,7 +567,7 @@ export type DoctorUpdateManyMutationInput = {
   registrationNumber?: Prisma.StringFieldUpdateOperationsInput | string
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   gender?: Prisma.EnumDoctorGenderFieldUpdateOperationsInput | $Enums.DoctorGender
-  appiontmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  appointmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
   qualification?: Prisma.StringFieldUpdateOperationsInput | string
   currentWorkingPlace?: Prisma.StringFieldUpdateOperationsInput | string
   designation?: Prisma.StringFieldUpdateOperationsInput | string
@@ -588,7 +588,7 @@ export type DoctorUncheckedUpdateManyInput = {
   registrationNumber?: Prisma.StringFieldUpdateOperationsInput | string
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   gender?: Prisma.EnumDoctorGenderFieldUpdateOperationsInput | $Enums.DoctorGender
-  appiontmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  appointmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
   qualification?: Prisma.StringFieldUpdateOperationsInput | string
   currentWorkingPlace?: Prisma.StringFieldUpdateOperationsInput | string
   designation?: Prisma.StringFieldUpdateOperationsInput | string
@@ -615,7 +615,7 @@ export type DoctorCountOrderByAggregateInput = {
   registrationNumber?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   gender?: Prisma.SortOrder
-  appiontmentFee?: Prisma.SortOrder
+  appointmentFee?: Prisma.SortOrder
   qualification?: Prisma.SortOrder
   currentWorkingPlace?: Prisma.SortOrder
   designation?: Prisma.SortOrder
@@ -629,7 +629,7 @@ export type DoctorCountOrderByAggregateInput = {
 
 export type DoctorAvgOrderByAggregateInput = {
   experience?: Prisma.SortOrder
-  appiontmentFee?: Prisma.SortOrder
+  appointmentFee?: Prisma.SortOrder
   avgRating?: Prisma.SortOrder
 }
 
@@ -643,7 +643,7 @@ export type DoctorMaxOrderByAggregateInput = {
   registrationNumber?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   gender?: Prisma.SortOrder
-  appiontmentFee?: Prisma.SortOrder
+  appointmentFee?: Prisma.SortOrder
   qualification?: Prisma.SortOrder
   currentWorkingPlace?: Prisma.SortOrder
   designation?: Prisma.SortOrder
@@ -665,7 +665,7 @@ export type DoctorMinOrderByAggregateInput = {
   registrationNumber?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   gender?: Prisma.SortOrder
-  appiontmentFee?: Prisma.SortOrder
+  appointmentFee?: Prisma.SortOrder
   qualification?: Prisma.SortOrder
   currentWorkingPlace?: Prisma.SortOrder
   designation?: Prisma.SortOrder
@@ -679,7 +679,7 @@ export type DoctorMinOrderByAggregateInput = {
 
 export type DoctorSumOrderByAggregateInput = {
   experience?: Prisma.SortOrder
-  appiontmentFee?: Prisma.SortOrder
+  appointmentFee?: Prisma.SortOrder
   avgRating?: Prisma.SortOrder
 }
 
@@ -764,7 +764,7 @@ export type DoctorCreateWithoutUserInput = {
   registrationNumber: string
   experience?: number
   gender: $Enums.DoctorGender
-  appiontmentFee: number
+  appointmentFee: number
   qualification: string
   currentWorkingPlace: string
   designation: string
@@ -786,7 +786,7 @@ export type DoctorUncheckedCreateWithoutUserInput = {
   registrationNumber: string
   experience?: number
   gender: $Enums.DoctorGender
-  appiontmentFee: number
+  appointmentFee: number
   qualification: string
   currentWorkingPlace: string
   designation: string
@@ -824,7 +824,7 @@ export type DoctorUpdateWithoutUserInput = {
   registrationNumber?: Prisma.StringFieldUpdateOperationsInput | string
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   gender?: Prisma.EnumDoctorGenderFieldUpdateOperationsInput | $Enums.DoctorGender
-  appiontmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  appointmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
   qualification?: Prisma.StringFieldUpdateOperationsInput | string
   currentWorkingPlace?: Prisma.StringFieldUpdateOperationsInput | string
   designation?: Prisma.StringFieldUpdateOperationsInput | string
@@ -846,7 +846,7 @@ export type DoctorUncheckedUpdateWithoutUserInput = {
   registrationNumber?: Prisma.StringFieldUpdateOperationsInput | string
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   gender?: Prisma.EnumDoctorGenderFieldUpdateOperationsInput | $Enums.DoctorGender
-  appiontmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  appointmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
   qualification?: Prisma.StringFieldUpdateOperationsInput | string
   currentWorkingPlace?: Prisma.StringFieldUpdateOperationsInput | string
   designation?: Prisma.StringFieldUpdateOperationsInput | string
@@ -868,7 +868,7 @@ export type DoctorCreateWithoutSpecialtiesInput = {
   registrationNumber: string
   experience?: number
   gender: $Enums.DoctorGender
-  appiontmentFee: number
+  appointmentFee: number
   qualification: string
   currentWorkingPlace: string
   designation: string
@@ -890,7 +890,7 @@ export type DoctorUncheckedCreateWithoutSpecialtiesInput = {
   registrationNumber: string
   experience?: number
   gender: $Enums.DoctorGender
-  appiontmentFee: number
+  appointmentFee: number
   qualification: string
   currentWorkingPlace: string
   designation: string
@@ -928,7 +928,7 @@ export type DoctorUpdateWithoutSpecialtiesInput = {
   registrationNumber?: Prisma.StringFieldUpdateOperationsInput | string
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   gender?: Prisma.EnumDoctorGenderFieldUpdateOperationsInput | $Enums.DoctorGender
-  appiontmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  appointmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
   qualification?: Prisma.StringFieldUpdateOperationsInput | string
   currentWorkingPlace?: Prisma.StringFieldUpdateOperationsInput | string
   designation?: Prisma.StringFieldUpdateOperationsInput | string
@@ -950,7 +950,7 @@ export type DoctorUncheckedUpdateWithoutSpecialtiesInput = {
   registrationNumber?: Prisma.StringFieldUpdateOperationsInput | string
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   gender?: Prisma.EnumDoctorGenderFieldUpdateOperationsInput | $Enums.DoctorGender
-  appiontmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  appointmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
   qualification?: Prisma.StringFieldUpdateOperationsInput | string
   currentWorkingPlace?: Prisma.StringFieldUpdateOperationsInput | string
   designation?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1003,7 +1003,7 @@ export type DoctorSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   registrationNumber?: boolean
   experience?: boolean
   gender?: boolean
-  appiontmentFee?: boolean
+  appointmentFee?: boolean
   qualification?: boolean
   currentWorkingPlace?: boolean
   designation?: boolean
@@ -1028,7 +1028,7 @@ export type DoctorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   registrationNumber?: boolean
   experience?: boolean
   gender?: boolean
-  appiontmentFee?: boolean
+  appointmentFee?: boolean
   qualification?: boolean
   currentWorkingPlace?: boolean
   designation?: boolean
@@ -1051,7 +1051,7 @@ export type DoctorSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   registrationNumber?: boolean
   experience?: boolean
   gender?: boolean
-  appiontmentFee?: boolean
+  appointmentFee?: boolean
   qualification?: boolean
   currentWorkingPlace?: boolean
   designation?: boolean
@@ -1074,7 +1074,7 @@ export type DoctorSelectScalar = {
   registrationNumber?: boolean
   experience?: boolean
   gender?: boolean
-  appiontmentFee?: boolean
+  appointmentFee?: boolean
   qualification?: boolean
   currentWorkingPlace?: boolean
   designation?: boolean
@@ -1086,7 +1086,7 @@ export type DoctorSelectScalar = {
   userId?: boolean
 }
 
-export type DoctorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "profilePhoto" | "contactNumber" | "address" | "registrationNumber" | "experience" | "gender" | "appiontmentFee" | "qualification" | "currentWorkingPlace" | "designation" | "avgRating" | "isDeleted" | "deleteAt" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["doctor"]>
+export type DoctorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "profilePhoto" | "contactNumber" | "address" | "registrationNumber" | "experience" | "gender" | "appointmentFee" | "qualification" | "currentWorkingPlace" | "designation" | "avgRating" | "isDeleted" | "deleteAt" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["doctor"]>
 export type DoctorInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   specialties?: boolean | Prisma.Doctor$specialtiesArgs<ExtArgs>
@@ -1115,7 +1115,7 @@ export type $DoctorPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     registrationNumber: string
     experience: number
     gender: $Enums.DoctorGender
-    appiontmentFee: number
+    appointmentFee: number
     qualification: string
     currentWorkingPlace: string
     designation: string
@@ -1559,7 +1559,7 @@ export interface DoctorFieldRefs {
   readonly registrationNumber: Prisma.FieldRef<"Doctor", 'String'>
   readonly experience: Prisma.FieldRef<"Doctor", 'Int'>
   readonly gender: Prisma.FieldRef<"Doctor", 'DoctorGender'>
-  readonly appiontmentFee: Prisma.FieldRef<"Doctor", 'Float'>
+  readonly appointmentFee: Prisma.FieldRef<"Doctor", 'Float'>
   readonly qualification: Prisma.FieldRef<"Doctor", 'String'>
   readonly currentWorkingPlace: Prisma.FieldRef<"Doctor", 'String'>
   readonly designation: Prisma.FieldRef<"Doctor", 'String'>

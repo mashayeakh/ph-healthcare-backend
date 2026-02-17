@@ -1,6 +1,7 @@
 import express from 'express';
 import { SpecialtyRouter } from '../modules/specialty/specialty.route';
 import { AuthRouter } from '../modules/auth/auth.route';
+import { UserRouter } from '../user/user.route';
 
 const route = express();
 
@@ -16,6 +17,13 @@ route.use(
     "/auth",
     AuthRouter
 );
+
+//!user
+route.use(
+    "/user",
+    UserRouter
+);
+
 
 
 export default route;
