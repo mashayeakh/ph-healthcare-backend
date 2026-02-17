@@ -2,10 +2,6 @@ import { DoctorGender } from "@prisma/prisma/enums";
 
 export interface ICreateDoctoraPayload {
     password: string, //default pass to craete doc
-    // name: string,
-    // email: string,
-    // needPasswordChange: boolean
-    // role: string
     doctor: {
         name: string;
         email: string;
