@@ -3,6 +3,8 @@ import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
 import { SpecialtyType, UpdateSpecialType } from "../specialty/dto/specialtyDto";
 import { Request, Response } from "express";
+import { AppError } from "@/app/errorHelpers/AppError";
+import status from "http-status";
 
 
 export const AuthService = {
@@ -25,7 +27,8 @@ export const AuthService = {
         });
 
         if (!data.user) {
-            throw new Error("Failed to register patient");
+            // throw new Error("Failed to register patient");
+            throw new AppError(status.BAD_REQUEST, "Failed to register patient")
         }
 
         //since by default user is patient, we want once he is registered, his profile will be created automatically, without that, the profile wont be created. 
@@ -77,7 +80,8 @@ export const AuthService = {
 
         //verification
         if (data.user.status === UserStatus.BLOCKED) {
-            throw new Error("User is blocked");
+            // throw new Error("User is blocked");
+            throw new AppError(status.FORBIDDEN, "User is blocked")
         }
 
         //you can do some other verification as well. 

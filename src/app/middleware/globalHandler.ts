@@ -20,6 +20,7 @@ export const globalErrHandler = (err: any, req: Request, res: Response, next: Ne
 
     let stautsCode: number = status.INTERNAL_SERVER_ERROR;
     let message: string = "Internal Server Error";
+    let stack: string | undefined = undefined
 
     //zor err pattern
     /* [
@@ -46,12 +47,17 @@ export const globalErrHandler = (err: any, req: Request, res: Response, next: Ne
         message = simplifiedErr.message;
 
         errorSource = [...simplifiedErr.errorSource];
+    } else if (err instanceof Error) {
+        stautsCode = status.INTERNAL_SERVER_ERROR,
+            message = err.message,
+            stack = err.stack
     }
 
     const errorResponse: TErrorResponse = {
         success: false,
         message: message,
         errorSource,
+        stack: envVars.NODE_ENV === "development" ? stack : undefined,
         error: envVars.NODE_ENV === "development" ? err : undefined,
     }
 

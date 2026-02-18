@@ -1,4 +1,6 @@
 import dotenv from 'dotenv'
+import { AppError } from '../errorHelpers/AppError';
+import status from 'http-status';
 
 dotenv.config();
 
@@ -25,7 +27,9 @@ const loadEnvVariables = (): EnvConfig => {
     // check for validation, if something is missing, throw new err
     requiredVariables.forEach((eachVari) => {
         if (!(process.env[eachVari])) {
-            throw new Error(`Environment variable ${eachVari} is required but set in .env fil`)
+            // throw new Error(`Environment variable ${eachVari} is required but set in .env fil`)
+
+            throw new AppError(status.INTERNAL_SERVER_ERROR, `Environment variable ${eachVari} is required but set in .env fil`)
         }
     })
 

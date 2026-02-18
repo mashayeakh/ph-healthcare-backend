@@ -3,6 +3,8 @@ import { auth } from "../lib/auth";
 import { prisma } from "../lib/prisma";
 import { ICreateDoctoraPayload } from "./dto/doctorDto";
 import { Specialty } from "@prisma/prisma/client";
+import { AppError } from "../errorHelpers/AppError";
+import status from "http-status";
 
 
 /*
@@ -27,7 +29,9 @@ export const UserService = {
                 }
             })
             if (!specialtyInfo) {
-                throw new Error(`Specialty not found: ${specialtyId}`);
+                // throw new Error(`Specialty not found: ${specialtyId}`);
+
+                throw new AppError(status.NOT_FOUND, `Specialty not found: ${specialtyId}`)
             }
             specialties.push(specialtyInfo);
         }

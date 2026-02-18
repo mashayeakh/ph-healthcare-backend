@@ -10,5 +10,6 @@ export interface TErrorResponse {
     success: boolean,
     message: string,
     errorSource: TErrorSources[],
+    stack?: string,
     error?: unknown
 }
