@@ -6,6 +6,7 @@ import z from "zod";
 import { statusCodes } from "better-auth";
 import { TErrorResponse, TErrorSources } from "../interfaces/error.interfaces";
 import { handleZodError } from "../errorHelpers/handleZodError";
+import { AppError } from "../errorHelpers/AppError";
 
 
 
@@ -47,10 +48,25 @@ export const globalErrHandler = (err: any, req: Request, res: Response, next: Ne
         message = simplifiedErr.message;
 
         errorSource = [...simplifiedErr.errorSource];
-    } else if (err instanceof Error) {
+    } else if (err instanceof AppError) {
+        stautsCode = err.statusCode,
+            message = err.message,
+            stack = err.stack,
+            errorSource = [{
+                path: "",
+                message: err.message
+            }]
+    }
+
+
+    else if (err instanceof Error) {
         stautsCode = status.INTERNAL_SERVER_ERROR,
             message = err.message,
-            stack = err.stack
+            stack = err.stack,
+            errorSource = [{
+                path: "",
+                message: err.message
+            }]
     }
 
     const errorResponse: TErrorResponse = {

@@ -5,6 +5,7 @@ import { SpecialtyType, UpdateSpecialType } from "../specialty/dto/specialtyDto"
 import { Request, Response } from "express";
 import { AppError } from "@/app/errorHelpers/AppError";
 import status from "http-status";
+import { getAccessToken, getRegreshtoken } from "@/app/utils/token";
 
 
 export const AuthService = {
@@ -64,7 +65,7 @@ export const AuthService = {
     },
 
 
-
+    //!patient login
 
     async loginPatient(payload: ILoginUserPayload) {
 
@@ -85,7 +86,32 @@ export const AuthService = {
         }
 
         //you can do some other verification as well. 
-        return data;
+
+        //get the access token - short time
+        const accessToken = getAccessToken({
+            userId: data.user.id,
+            role: data.user.role,
+            name: data.user.name,
+            email: data.user.email,
+            status: data.user.status,
+            isDeleated: data.user.isDeleted,
+            emailVerified: data.user.emailVerified,
+        });
+        //get the refresh token - long time
+        const refreshToken = getRegreshtoken({
+            userId: data.user.id,
+            role: data.user.role,
+            name: data.user.name,
+            email: data.user.email,
+            status: data.user.status,
+            isDeleated: data.user.isDeleted,
+            emailVerified: data.user.emailVerified,
+        });
+        return {
+            ...data,
+            accessToken,
+            refreshToken
+        };
     }
 
-}
+} 
