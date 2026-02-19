@@ -36,7 +36,7 @@ export const vefiryToken = (token: string, secret: string) => {
     } catch (error: any) {
         // throw error;
         return {
-            success: true,
+            success: false,
             message: error.message,
             error
         }
