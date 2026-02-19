@@ -3,6 +3,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import { Role, UserStatus } from "../../../prisma/generated/prisma/enums";
 import { envVars } from "../config/env";
+import ms, { StringValue } from "ms";
 // If your Prisma file is located elsewhere, you can change the path
 
 export const auth = betterAuth({
@@ -22,6 +23,15 @@ export const auth = betterAuth({
     // advanced: {
     //     disableCSRFCheck: true
     // },
+    session: {
+        expiresIn: 60 * 60 * 60 * 24, // 1d,
+        updateAge: 60 * 60 * 60 * 24, // 1d,
+
+        cookieCache: {
+            enabled: true,
+            maxAge: 60 * 60 * 60 * 24 // 1d
+        }
+    },
     user: {
         additionalFields: {
             role: {

@@ -47,8 +47,32 @@ export const AuthService = {
                 })
             })
 
+            //get the access token - short time
+            const accessToken = getAccessToken({
+                userId: data.user.id,
+                role: data.user.role,
+                name: data.user.name,
+                email: data.user.email,
+                status: data.user.status,
+                isDeleated: data.user.isDeleted,
+                emailVerified: data.user.emailVerified,
+            });
+            //get the refresh token - long time
+            const refreshToken = getRegreshtoken({
+                userId: data.user.id,
+                role: data.user.role,
+                name: data.user.name,
+                email: data.user.email,
+                status: data.user.status,
+                isDeleated: data.user.isDeleted,
+                emailVerified: data.user.emailVerified,
+            });
+
             return {
                 ...data,
+                token: data.token,
+                accessToken,
+                refreshToken,
                 patient
             };
         } catch (error) {
