@@ -1,7 +1,7 @@
 import express from 'express';
 import { SpecialtyRouter } from '../modules/specialty/specialty.route';
 import { AuthRouter } from '../modules/auth/auth.route';
-import { UserRouter } from '../user/user.route';
+import { UserRouter } from '../modules/user/user.route';
 import { DoctorRouter } from '../modules/doctor/doctor.route';
 
 const route = express();

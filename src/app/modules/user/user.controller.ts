@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import status from "http-status";
-import { catchAsyc } from "../shared/catchAsync";
-import { sendResponse } from "../utils/sendResponse";
+import { catchAsyc } from "../../shared/catchAsync";
+import { sendResponse } from "../../utils/sendResponse";
 import { UserService } from "./user.service";
 
 

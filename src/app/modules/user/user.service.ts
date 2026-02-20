@@ -1,9 +1,9 @@
 import { Role } from "@prisma/prisma/enums";
-import { auth } from "../lib/auth";
-import { prisma } from "../lib/prisma";
+import { auth } from "../../lib/auth";
+import { prisma } from "../../lib/prisma";
 import { ICreateDoctoraPayload } from "./dto/doctorDto";
 import { Specialty } from "@prisma/prisma/client";
-import { AppError } from "../errorHelpers/AppError";
+import { AppError } from "../../errorHelpers/AppError";
 import status from "http-status";
 
 
@@ -14,8 +14,8 @@ import status from "http-status";
 export const UserService = {
 
 
+    //! create doctor
     async createDoctor(payload: ICreateDoctoraPayload) {
-
 
         //specialit
         const specialties: Specialty[] = [];
@@ -128,7 +128,21 @@ export const UserService = {
 
             throw error;
         }
+    },
+
+    //!create Admin
+    async createAdmin() {
+
+    },
+
+
+}
+export interface ICreateAdmin{
+    password:string,
+    admin:{
+        name:string,
+        email:string,
+        profilePhoto?:string, 
+        
     }
-
-
 }
