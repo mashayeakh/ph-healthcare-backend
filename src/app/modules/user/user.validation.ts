@@ -24,3 +24,19 @@ export const createDoctorZodSchema = z.object({
     ),
     specialties: z.array(z.uuid(), "Specialties must be an array of string").min(1, "At least one specialty is required")
 })
+
+export const createAdminZodSchema = z.object({
+    // the structure will be simillar the way you send data in postman. 
+    password: z.string("Password is required").min(6, "password must be at least 6 characters").max(20, "password must be at most 20 characters"),
+
+    admin: z.object(
+        {
+            name: z.string("Name is required")
+                .min(5, "Name must be at least 5 characharactersters")
+                .max(20, "Name must be at most 20 characharactersters"),
+
+            email: z.email("Invalid email address"),
+
+        }
+    ),
+})

@@ -8,6 +8,7 @@ import { UserService } from "./user.service";
 
 export const UserController = {
 
+    //!Doctor
     createDoctorUser: catchAsyc(
         async (req: Request, res: Response) => {
             console.log("** \nhit in controller");
@@ -22,11 +23,53 @@ export const UserController = {
             sendResponse(res, {
                 httpStatusCode: status.CREATED,
                 success: true,
-                message: "created",
+                message: "User created successfully",
                 result: data
             })
         }
-    )
+    ),
+
+    //!Admin
+    createAdminUser: catchAsyc(
+        async (req: Request, res: Response) => {
+            console.log("** \nhit in controller");
+            console.log(req.body)
+            // const payload = req.body;
+            // console.log("Controller payload = ", payload)
+
+            const data = await UserService.createAdmin(req.body);
+
+            console.log("controller Data = ", data)
+
+            sendResponse(res, {
+                httpStatusCode: status.CREATED,
+                success: true,
+                message: "User created successfully",
+                result: data
+            })
+        }
+    ),
+
+    //!Admin
+    createSuperAdminUser: catchAsyc(
+        async (req: Request, res: Response) => {
+            console.log("** \nhit in controller");
+            console.log(req.body)
+            // const payload = req.body;
+            // console.log("Controller payload = ", payload)
+
+            const data = await UserService.createSuperAdmin(req.body);
+
+            console.log("controller Data = ", data)
+
+            sendResponse(res, {
+                httpStatusCode: status.CREATED,
+                success: true,
+                message: "User created successfully",
+                result: data
+            })
+        }
+    ),
 
 
 };
