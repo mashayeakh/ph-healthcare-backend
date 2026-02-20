@@ -247,11 +247,11 @@ export type DoctorAggregateArgs<ExtArgs extends runtime.Types.Extensions.Interna
 }
 
 export type GetDoctorAggregateType<T extends DoctorAggregateArgs> = {
-      [P in keyof T & keyof AggregateDoctor]: P extends '_count' | 'count'
-    ? T[P] extends true
-      ? number
-      : Prisma.GetScalarType<T[P], AggregateDoctor[P]>
-    : Prisma.GetScalarType<T[P], AggregateDoctor[P]>
+  [P in keyof T & keyof AggregateDoctor]: P extends '_count' | 'count'
+  ? T[P] extends true
+  ? number
+  : Prisma.GetScalarType<T[P], AggregateDoctor[P]>
+  : Prisma.GetScalarType<T[P], AggregateDoctor[P]>
 }
 
 
@@ -301,15 +301,15 @@ export type DoctorGroupByOutputType = {
 type GetDoctorGroupByPayload<T extends DoctorGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<DoctorGroupByOutputType, T['by']> &
-      {
-        [P in ((keyof T) & (keyof DoctorGroupByOutputType))]: P extends '_count'
-          ? T[P] extends boolean
-            ? number
-            : Prisma.GetScalarType<T[P], DoctorGroupByOutputType[P]>
-          : Prisma.GetScalarType<T[P], DoctorGroupByOutputType[P]>
-      }
-    >
+    {
+      [P in ((keyof T) & (keyof DoctorGroupByOutputType))]: P extends '_count'
+      ? T[P] extends boolean
+      ? number
+      : Prisma.GetScalarType<T[P], DoctorGroupByOutputType[P]>
+      : Prisma.GetScalarType<T[P], DoctorGroupByOutputType[P]>
+    }
   >
+>
 
 
 
@@ -1397,10 +1397,10 @@ export interface DoctorDelegate<ExtArgs extends runtime.Types.Extensions.Interna
     args?: Prisma.Subset<T, DoctorCountArgs>,
   ): Prisma.PrismaPromise<
     T extends runtime.Types.Utils.Record<'select', any>
-      ? T['select'] extends true
-        ? number
-        : Prisma.GetScalarType<T['select'], DoctorCountAggregateOutputType>
-      : number
+    ? T['select'] extends true
+    ? number
+    : Prisma.GetScalarType<T['select'], DoctorCountAggregateOutputType>
+    : number
   >
 
   /**
@@ -1454,8 +1454,8 @@ export interface DoctorDelegate<ExtArgs extends runtime.Types.Extensions.Interna
       Prisma.Extends<'take', Prisma.Keys<T>>
     >,
     OrderByArg extends Prisma.True extends HasSelectOrTake
-      ? { orderBy: DoctorGroupByArgs['orderBy'] }
-      : { orderBy?: DoctorGroupByArgs['orderBy'] },
+    ? { orderBy: DoctorGroupByArgs['orderBy'] }
+    : { orderBy?: DoctorGroupByArgs['orderBy'] },
     OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>,
     ByFields extends Prisma.MaybeTupleToUnion<T['by']>,
     ByValid extends Prisma.Has<ByFields, OrderFields>,
@@ -1466,49 +1466,49 @@ export interface DoctorDelegate<ExtArgs extends runtime.Types.Extensions.Interna
     ? `Error: "by" must not be empty.`
     : HavingValid extends Prisma.False
     ? {
-        [P in HavingFields]: P extends ByFields
-          ? never
-          : P extends string
-          ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-          : [
-              Error,
-              'Field ',
-              P,
-              ` in "having" needs to be provided in "by"`,
-            ]
-      }[HavingFields]
+      [P in HavingFields]: P extends ByFields
+      ? never
+      : P extends string
+      ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+      : [
+        Error,
+        'Field ',
+        P,
+        ` in "having" needs to be provided in "by"`,
+      ]
+    }[HavingFields]
     : 'take' extends Prisma.Keys<T>
     ? 'orderBy' extends Prisma.Keys<T>
-      ? ByValid extends Prisma.True
-        ? {}
-        : {
-            [P in OrderFields]: P extends ByFields
-              ? never
-              : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-          }[OrderFields]
-      : 'Error: If you provide "take", you also need to provide "orderBy"'
+    ? ByValid extends Prisma.True
+    ? {}
+    : {
+      [P in OrderFields]: P extends ByFields
+      ? never
+      : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+    }[OrderFields]
+    : 'Error: If you provide "take", you also need to provide "orderBy"'
     : 'skip' extends Prisma.Keys<T>
     ? 'orderBy' extends Prisma.Keys<T>
-      ? ByValid extends Prisma.True
-        ? {}
-        : {
-            [P in OrderFields]: P extends ByFields
-              ? never
-              : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-          }[OrderFields]
-      : 'Error: If you provide "skip", you also need to provide "orderBy"'
+    ? ByValid extends Prisma.True
+    ? {}
+    : {
+      [P in OrderFields]: P extends ByFields
+      ? never
+      : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+    }[OrderFields]
+    : 'Error: If you provide "skip", you also need to provide "orderBy"'
     : ByValid extends Prisma.True
     ? {}
     : {
-        [P in OrderFields]: P extends ByFields
-          ? never
-          : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-      }[OrderFields]
+      [P in OrderFields]: P extends ByFields
+      ? never
+      : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+    }[OrderFields]
   >(args: Prisma.SubsetIntersection<T, DoctorGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDoctorGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-/**
- * Fields of the Doctor model
- */
-readonly fields: DoctorFieldRefs;
+  /**
+   * Fields of the Doctor model
+   */
+  readonly fields: DoctorFieldRefs;
 }
 
 /**
@@ -1570,7 +1570,7 @@ export interface DoctorFieldRefs {
   readonly updatedAt: Prisma.FieldRef<"Doctor", 'DateTime'>
   readonly userId: Prisma.FieldRef<"Doctor", 'String'>
 }
-    
+
 
 // Custom InputTypes
 /**

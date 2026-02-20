@@ -11,23 +11,26 @@ import { Role } from '@prisma/prisma/enums';
 import { checkAuth } from '@/app/middleware/checkAuth';
 const route = express();
 
-
+//!Create specialty
 route.post(
     "/",
     SpecialtyController.specialtyCreate
 );
 
+//! get all specialties
 route.get(
     "/",
     checkAuth(Role.ADMIN, Role.SUPER_ADMIN, Role.DOCTOR),
     SpecialtyController.getAllSpecialty
 );
 
+//! delete any specialty based on id
 route.delete(
     "/:id",
     SpecialtyController.deleteSpecialty
 );
 
+//!update any specialty based on id
 route.put(
     "/:id",
     SpecialtyController.editSpecialty
