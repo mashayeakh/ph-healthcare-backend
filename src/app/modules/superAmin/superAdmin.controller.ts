@@ -3,19 +3,20 @@ import { sendResponse } from "@/app/utils/sendResponse";
 
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import status from "http-status";
-import { AdminService } from "../superAmin/superAdmin.service";
+import { AdminService } from "./superAdmin.service";
+import { SuperAdminService } from "../admin/admin.service";
 
 
 
-export const AdminController = {
-    //!get all admins
-    viewAllAdmin: catchAsyc(
+export const SuperAdminController = {
+    //!get all super-admin
+    viewAllSuperAdmin: catchAsyc(
         async (req: Request, res: Response) => {
-            const data = await AdminService.getAllAdmins()
+            const data = await SuperAdminService.getAllSuperAdmins()
             sendResponse(res, {
                 httpStatusCode: status.OK,
                 success: true,
-                message: "All admins fetched successfully",
+                message: "All super eadmins fetched successfully",
                 result: {
                     count: data.length,
                     data: data
@@ -24,14 +25,14 @@ export const AdminController = {
         }
     ),
 
-    //!get admin by id
-    viewSingleAdminById: catchAsyc(
+    //!get super-admin by id
+    viewSingleSuperAdminById: catchAsyc(
         async (req: Request, res: Response) => {
-            const data = await AdminService.getAdminById(req.params.id as string)
+            const data = await SuperAdminService.getSuperAdminById(req.params.id as string)
             sendResponse(res, {
                 httpStatusCode: status.OK,
                 success: true,
-                message: "Admin found successfully",
+                message: "Super-Admin found successfully",
                 result: data
 
             })
@@ -40,23 +41,23 @@ export const AdminController = {
     // //! Soft delete
     softDeleteById: catchAsyc(
         async (req: Request, res: Response) => {
-            const data = await AdminService.softDeleteById(req.params.id as string)
+            const data = await SuperAdminService.softDeleteById(req.params.id as string)
             sendResponse(res, {
                 httpStatusCode: status.OK,
                 success: true,
-                message: "Admin soft delete established",
+                message: "Super Admin soft delete established",
                 result: data
             })
         }
     ),
-    // //! update admin
-    updateAdmin: catchAsyc(
+    // //! update super-admin
+    updateSuperAdmin: catchAsyc(
         async (req: Request, res: Response) => {
-            const data = await AdminService.updateAdmin(req.params.id as string, req.body)
+            const data = await SuperAdminService.updateSuperAdmin(req.params.id as string, req.body)
             sendResponse(res, {
                 httpStatusCode: status.OK,
                 success: true,
-                message: "Admin updated",
+                message: "Super-admin updated",
                 result: data
             })
         }

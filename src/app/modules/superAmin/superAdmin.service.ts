@@ -6,16 +6,15 @@ import { Request, Response } from "express";
 import { AppError } from "@/app/errorHelpers/AppError";
 import status from "http-status";
 import { getAccessToken, getRegreshtoken } from "@/app/utils/token";
-import { IUpdateAdminPayload } from "./dto/updateAdminDto";
-import { IUpdateSuperAdminPayload } from "../superAmin/dto/updateSuperAdminDto";
+import { IUpdateAdminPayload } from "./dto/updateSuperAdminDto";
 
 
-export const SuperAdminService = {
+export const AdminService = {
 
-    //! Get all super-admin 
-    async getAllSuperAdmins() {
+    //! Get all admin 
+    async getAllAdmins() {
         // return await prisma.admin.findMany();
-        return await prisma.superAdmin.findMany({
+        return await prisma.admin.findMany({
             where: {
                 isDeleted: false,
             },
@@ -45,61 +44,64 @@ export const SuperAdminService = {
     },
 
 
-    //! get super-admin by id
-    async getSuperAdminById(id: string) {
-        const superAdmin = await prisma.superAdmin.findUnique({
+    //! get admin by id
+    async getAdminById(id: string) {
+        const admin = await prisma.admin.findUnique({
             where: {
                 id: id
             },
         })
-        if (!superAdmin) {
-            throw new AppError(status.NOT_FOUND, "Super Admin not found")
+        if (!admin) {
+            throw new AppError(status.NOT_FOUND, "Admin not found")
         }
 
         return {
-            ...superAdmin,
+            ...admin,
         };
     },
 
 
-    //! update super-admin
-    async updateSuperAdmin(id: string, payload: IUpdateSuperAdminPayload) {
-        // Check if super-admin exists and not deleted
-        const existingSuperAdmin = await prisma.superAdmin.findUnique({
+    //! update Admin
+    async updateAdmin(id: string, payload: IUpdateAdminPayload) {
+        // Check if admin exists and not deleted
+        const existingAdmin = await prisma.admin.findUnique({
             where: { id, isDeleted: false },
         });
 
-        if (!existingSuperAdmin) {
-            throw new AppError(status.NOT_FOUND, "Super Admin not found");
+        if (!existingAdmin) {
+            throw new AppError(status.NOT_FOUND, "Admin not found");
         }
 
-        const { ...superAdminData } = payload;
+        const { ...adminData } = payload;
 
-        // Update super-admin basic information
-        return await prisma.superAdmin.update({
+        // Update admin basic information
+        return await prisma.admin.update({
             where: { id },
-            data: superAdminData,
+            data: adminData,
         });
     },
 
-    //!soft Delete super-admin
+    //!soft Delete admin
     async softDeleteById(id: string) {
 
-        // Check if super-admin exists and not already deleted
-        const superAdmin = await prisma.superAdmin.findUnique({
+
+        // Check if admin exists and not already deleted
+        const admin = await prisma.admin.findUnique({
             where: { id },
         });
 
-        if (!superAdmin) {
-            throw new AppError(status.NOT_FOUND, "Super Admin not found")
+
+        if (!admin) {
+            throw new AppError(status.NOT_FOUND, "Doctor not found")
         }
 
-        if (superAdmin.isDeleted) {
+        if (admin.isDeleted) {
             throw new AppError(status.NO_CONTENT, "Already deleted")
         }
 
 
-        return await prisma.superAdmin.update({
+
+        return await prisma.admin.update({
             where: {
                 id: id
             },
