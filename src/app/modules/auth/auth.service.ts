@@ -3,6 +3,9 @@ import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
 import { SpecialtyType, UpdateSpecialType } from "../specialty/dto/specialtyDto";
 import { Request, Response } from "express";
+import { AppError } from "@/app/errorHelpers/AppError";
+import status from "http-status";
+import { getAccessToken, getRegreshtoken } from "@/app/utils/token";
 
 
 export const AuthService = {
@@ -25,17 +28,70 @@ export const AuthService = {
         });
 
         if (!data.user) {
-            throw new Error("Failed to register patient");
+            // throw new Error("Failed to register patient");
+            throw new AppError(status.BAD_REQUEST, "Failed to register patient")
         }
-        console.log("***DATA ", data)
 
-        //TODO - we will create profile of patient once we finish with patient prisma
-        return data;
+        //since by default user is patient, we want once he is registered, his profile will be created automatically, without that, the profile wont be created. 
+
+        try {
+            const patient = await prisma.$transaction(async (tx) => {
+                //create the patient
+                return await tx.patient.create({
+                    //what to put in the profile, we will define here
+                    data: {
+                        userId: data.user.id,
+                        name: payload.name,
+                        email: payload.email,
+                    }
+                })
+            })
+
+            //get the access token - short time
+            const accessToken = getAccessToken({
+                userId: data.user.id,
+                role: data.user.role,
+                name: data.user.name,
+                email: data.user.email,
+                status: data.user.status,
+                isDeleated: data.user.isDeleted,
+                emailVerified: data.user.emailVerified,
+            });
+            //get the refresh token - long time
+            const refreshToken = getRegreshtoken({
+                userId: data.user.id,
+                role: data.user.role,
+                name: data.user.name,
+                email: data.user.email,
+                status: data.user.status,
+                isDeleated: data.user.isDeleted,
+                emailVerified: data.user.emailVerified,
+            });
+
+            return {
+                ...data,
+                token: data.token,
+                accessToken,
+                refreshToken,
+                patient
+            };
+        } catch (error) {
+            console.log("Transaction error ", error);
+            //if patient is registered but profile is not created then we can delete the patient manually
+            await prisma.user.delete({
+                where: {
+                    id: data.user.id
+                }
+            })
+            throw error;
+
+        }
     },
 
 
+    //!patient login
+
     async loginPatient(payload: ILoginUserPayload) {
-        console.log("*login data  = ", payload)
 
         const { email, password } = payload
 
@@ -49,13 +105,37 @@ export const AuthService = {
 
         //verification
         if (data.user.status === UserStatus.BLOCKED) {
-            throw new Error("User is blocked");
+            // throw new Error("User is blocked");
+            throw new AppError(status.FORBIDDEN, "User is blocked")
         }
 
         //you can do some other verification as well. 
 
-
-        return data;
+        //get the access token - short time
+        const accessToken = getAccessToken({
+            userId: data.user.id,
+            role: data.user.role,
+            name: data.user.name,
+            email: data.user.email,
+            status: data.user.status,
+            isDeleated: data.user.isDeleted,
+            emailVerified: data.user.emailVerified,
+        });
+        //get the refresh token - long time
+        const refreshToken = getRegreshtoken({
+            userId: data.user.id,
+            role: data.user.role,
+            name: data.user.name,
+            email: data.user.email,
+            status: data.user.status,
+            isDeleated: data.user.isDeleted,
+            emailVerified: data.user.emailVerified,
+        });
+        return {
+            ...data,
+            accessToken,
+            refreshToken
+        };
     }
 
-}
+} 
