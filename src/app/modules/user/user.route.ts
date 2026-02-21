@@ -1,11 +1,11 @@
 import { UserController } from './user.controller';
 import z, { ZodObject } from 'zod';
 import { deprecate } from 'node:util';
-import { DoctorGender, Role } from '@prisma/prisma/enums';
 import express, { NextFunction, Request, RequestHandler, Response } from "express";
 import { validateReq } from '../../middleware/validateReq';
 import { createAdminZodSchema, createDoctorZodSchema } from './user.validation';
 import { checkAuth } from '@/app/middleware/checkAuth';
+import { Role } from '@prisma/prisma/enums';
 
 const route = express();
 

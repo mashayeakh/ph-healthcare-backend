@@ -1,4 +1,3 @@
-import { DoctorGender } from "@prisma/prisma/enums";
 
 export interface IUpdateAdminPayload {
     name?: string;

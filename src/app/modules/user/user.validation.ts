@@ -1,4 +1,5 @@
-import { DoctorGender } from "@prisma/prisma/enums";
+// import { DoctorGender } from "@prisma/prisma/enums";
+import { Gender } from "@prisma/prisma/enums";
 import z from "zod";
 
 export const createDoctorZodSchema = z.object({
@@ -15,7 +16,7 @@ export const createDoctorZodSchema = z.object({
             registrationNumber: z.string("Registration number is required and it must be unique"),
             address: z.string().optional(),
             experience: z.int("Must be an integer").nonnegative("Experience cannot be negative").optional(),
-            gender: z.enum([DoctorGender.FEMALE, DoctorGender.MALE], "Gender must me either MALE or FEMALE"),
+            gender: z.enum([Gender.FEMALE, Gender.MALE], "Gender must me either MALE or FEMALE"),
             appointmentFee: z.int("Must be an integer").nonnegative("Appointment Fee cannot be negative").optional(),
             qualification: z.string("Qualification is required").min(2, "Qualification must be at least 2 charactoers").max(50, "Qualification must be at most 50 charactoers"),
             currentWorkingPlace: z.string("Current Working Place is required"),
