@@ -6,6 +6,7 @@ import { Request, Response } from "express";
 import { AppError } from "@/app/errorHelpers/AppError";
 import status from "http-status";
 import { getAccessToken, getRegreshtoken } from "@/app/utils/token";
+import { IRequestUser } from "@/app/interfaces/requestUserInterface";
 
 
 export const AuthService = {
@@ -136,6 +137,38 @@ export const AuthService = {
             accessToken,
             refreshToken
         };
+    },
+
+    //! fetch full profile of the user
+    async getMe(user: IRequestUser) {
+        const isExist = await prisma.user.findUnique({
+            where: {
+                id: user.userId
+            },
+            include: {
+                patient: {
+                    include: {
+                        appointments: true,
+                        reviews: true,
+                        prescriptions: true,
+                        medicalReports: true,
+                        patientHealthData: true,
+                    }
+                },
+                doctor: {
+                    include: {
+                        specialties: true,
+                        appointments: true,
+                        reviews: true,
+                        prescriptions: true,
+                    }
+                }
+            }
+        })
+        if (!isExist) {
+            throw new AppError(status.NOT_FOUND, "User not found");
+        }
+        return isExist;
     }
 
 } 

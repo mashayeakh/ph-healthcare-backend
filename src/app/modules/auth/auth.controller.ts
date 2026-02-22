@@ -83,6 +83,20 @@ export const AuthController = {
                 }
             })
         }
+    ),
+
+    getMe: catchAsyc(
+        async (req: Request, res: Response) => {
+            const user = req.user
+            console.log("USER ", user)
+            const data = await AuthService.getMe(user);
+            sendResponse(res, {
+                httpStatusCode: status.OK,
+                success: true,
+                message: "User profile fetched successfully",
+                result: data
+            })
+        }
     )
 
 };

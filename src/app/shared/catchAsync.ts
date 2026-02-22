@@ -9,5 +9,4 @@ export const catchAsyc = (fn: RequestHandler) => {
             next(error);
         }
     }
-
 }

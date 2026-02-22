@@ -62,10 +62,16 @@ export const checkAuth = (...authRoles: Role[]) =>
                         throw new AppError(status.UNAUTHORIZED, "Unauthorized access! User is deleted")
                     }
 
+                    //role 
                     if (authRoles.length > 0 && !authRoles.includes(user.role)) {
                         throw new AppError(status.FORBIDDEN, "Forbideen access!! You do not have permission to access this resource");
                     }
-                    return next()
+                    req.user = {
+                        userId: user.id,
+                        email: user.email,
+                        role: user.role,
+                    }
+                    // return next()
                 }
             }
             //! now working for jwt - checking for access token
@@ -87,6 +93,7 @@ export const checkAuth = (...authRoles: Role[]) =>
                 throw new AppError(status.FORBIDDEN, "Forbidden access! You do not have permission to access this");
 
             }
+
             next();
         } catch (error: any) {
             next(error)

@@ -1,5 +1,7 @@
 import express from 'express';
 import { AuthController } from './auth.controller';
+import { checkAuth } from '@/app/middleware/checkAuth';
+import { Role } from '@prisma/prisma/enums';
 const route = express();
 
 
@@ -14,5 +16,10 @@ route.post(
     AuthController.loginUser
 )
 
+route.get(
+    "/me",
+    checkAuth(Role.ADMIN, Role.DOCTOR, Role.PATIENT, Role.SUPER_ADMIN),
+    AuthController.getMe
+)
 
 export const AuthRouter = route;
