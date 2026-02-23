@@ -278,7 +278,44 @@ export const AuthService = {
             }
         })
 
+        // generate new access token
+        const accessToken = getAccessToken({
+            userId: userSession.user.id,
+            role: userSession.user.role,
+            name: userSession.user.name,
+            email: userSession.user.email,
+            status: userSession.user.status,
+            isDeleated: userSession.user.isDeleted,
+            emailVerified: userSession.user.emailVerified,
+        });
+
+        //get the refresh token - long time (because when refresh is expired, then how will refresh token crate another access token, so we need to generate new refresh token as well) 
+        const refreshToken = getRegreshtoken({
+            userId: userSession.user.id,
+            role: userSession.user.role,
+            name: userSession.user.name,
+            email: userSession.user.email,
+            status: userSession.user.status,
+            isDeleated: userSession.user.isDeleted,
+            emailVerified: userSession.user.emailVerified,
+        });
+
+
         console.log("---- reulth", result)
-        return result;
+        return {
+            ...result,
+            accessToken,
+            refreshToken,
+
+        };
+    },
+
+    //!logout 
+    async logout(sessionToken: string) {
+        return await auth.api.signOut({
+            headers: {
+                AUTHORIZATION: `Bearer ${sessionToken}`
+            }
+        })
     }
 } 

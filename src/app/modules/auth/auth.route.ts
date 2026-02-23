@@ -38,6 +38,13 @@ route.post(
     AuthController.changePassword
 )
 
+//! logout user 
+route.post(
+    "/logout",
+    checkAuth(Role.ADMIN, Role.DOCTOR, Role.PATIENT, Role.SUPER_ADMIN),
+    AuthController.logout
+)
+
 
 
 export const AuthRouter = route;

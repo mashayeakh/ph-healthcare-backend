@@ -9,6 +9,7 @@ import { setAccessTokenCookie, setBetterAuthSessionCookie, setRefreshTokenCookie
 import { envVars } from "@/app/config/env";
 import ms, { StringValue } from "ms";
 import { AppError } from "@/app/errorHelpers/AppError";
+import { clearCookie } from "@/app/utils/cookies";
 
 
 
@@ -145,6 +146,16 @@ export const AuthController = {
 
             const result = await AuthService.changePassword(req.body, sessionToken);
 
+            const {
+                accessToken,
+                refreshToken,
+                token
+            } = result
+
+            setAccessTokenCookie(res, accessToken);
+            setRefreshTokenCookie(res, refreshToken);
+            setBetterAuthSessionCookie(res, token as string);
+
             sendResponse(res, {
                 httpStatusCode: status.OK,
                 success: true,
@@ -153,4 +164,38 @@ export const AuthController = {
             })
         }
     ),
+
+    logout: catchAsyc(
+        async (req: Request, res: Response) => {
+            const betterAuthSessiontoken = req.cookies["better-auth.session_token"];
+
+            const result = await AuthService.logout(betterAuthSessiontoken);
+
+            //clear the cookies - access tokene
+            clearCookie(res, 'accessToken', {
+                httpOnly: true,
+                secure: false,
+                sameSite: "none",
+            });
+            //clear the cookies - refresh tokene
+            clearCookie(res, 'refreshToken', {
+                httpOnly: true,
+                secure: false,
+                sameSite: "none",
+            });
+            //clear the cookies - better-auth-session tokene
+            clearCookie(res, 'better-auth.session_token', {
+                httpOnly: true,
+                secure: false,
+                sameSite: "none",
+            });
+
+            sendResponse(res, {
+                httpStatusCode: status.OK,
+                success: true,
+                message: "User logged outp successfully",
+                result
+            })
+        }
+    )
 }
