@@ -3,8 +3,8 @@ import { sendResponse } from "@/app/utils/sendResponse";
 
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import status from "http-status";
-import { AdminService } from "./superAdmin.service";
-import { SuperAdminService } from "../admin/admin.service";
+import { SuperAdminService } from "./superAdmin.service";
+
 
 
 

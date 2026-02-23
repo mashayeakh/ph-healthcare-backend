@@ -3,7 +3,7 @@ import { sendResponse } from "@/app/utils/sendResponse";
 
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import status from "http-status";
-import { AdminService } from "../superAmin/superAdmin.service";
+import { AdminService } from "./admin.service";
 
 
 
@@ -40,7 +40,9 @@ export const AdminController = {
     // //! Soft delete
     softDeleteById: catchAsyc(
         async (req: Request, res: Response) => {
-            const data = await AdminService.softDeleteById(req.params.id as string)
+            const user = req.user;
+            console.log("logged in user ", user)
+            const data = await AdminService.softDeleteAdminById(req.params.id as string, user)
             sendResponse(res, {
                 httpStatusCode: status.OK,
                 success: true,

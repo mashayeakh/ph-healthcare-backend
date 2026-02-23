@@ -11,15 +11,25 @@ route.post(
     AuthController.createPatient
 );
 
+//! login patient
 route.post(
     "/patient/login",
     AuthController.loginUser
 )
 
+//! own profile
 route.get(
     "/me",
     checkAuth(Role.ADMIN, Role.DOCTOR, Role.PATIENT, Role.SUPER_ADMIN),
     AuthController.getMe
 )
+
+//!get new access token
+route.post(
+    "/refresh-token",
+    AuthController.getNewToken)
+
+
+
 
 export const AuthRouter = route;

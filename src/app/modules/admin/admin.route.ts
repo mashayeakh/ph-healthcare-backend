@@ -8,14 +8,14 @@ const route = express();
 //!get all admins
 route.get(
     "/",
-    checkAuth(Role.SUPER_ADMIN),
+    checkAuth(Role.SUPER_ADMIN, Role.ADMIN),
     AdminController.viewAllAdmin
 );
 
 // //!get specific admin by id
 route.get(
     "/:id",
-    checkAuth(Role.SUPER_ADMIN),
+    checkAuth(Role.SUPER_ADMIN, Role.ADMIN),
     AdminController.viewSingleAdminById
 );
 
@@ -29,7 +29,7 @@ route.patch(
 // //!update doctor
 route.patch(
     "/:id/update",
-    checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+    checkAuth(Role.SUPER_ADMIN),
     AdminController.updateAdmin
 );
 
