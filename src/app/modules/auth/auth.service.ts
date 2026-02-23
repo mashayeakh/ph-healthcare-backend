@@ -175,7 +175,7 @@ export const AuthService = {
     },
 
 
-    // get new access token using refresh token
+    //! get new access token using refresh token
     async getNewToken(refreshToken: string, sessionToken: string) {
 
         //verify the refresh token. 
@@ -245,5 +245,40 @@ export const AuthService = {
             refreshToken: newRefreshToken,
             sessionToken: token
         }
+    },
+
+    //!change pswd 
+    async changePassword(payload: IChangePswdPayload, sessionToken: string) {
+        //we will get the user from the session token with using better auth. 
+        const userSession = await auth.api.getSession({
+            headers: {
+                AUTHORIZATION: `Bearer ${sessionToken}`
+            }
+        })
+        console.log("---User found ", userSession)
+        if (!userSession || !userSession.user) {
+            throw new AppError(status.UNAUTHORIZED, "Invalid session token")
+        }
+
+        //now extract curr pswd and new pswd from the payload
+        const {
+            currentPassword,
+            newPassword
+        } = payload
+
+        const result = await auth.api.changePassword({
+            body: {
+                currentPassword,
+                newPassword,
+                revokeOtherSessions: true,// it means, sob site theke logout hoye jabe, once he change the password except the curr session.
+            },
+            //also pass the header so that better auth can identify the user and the change the paswd
+            headers: {
+                AUTHORIZATION: `Bearer ${sessionToken}`
+            }
+        })
+
+        console.log("---- reulth", result)
+        return result;
     }
 } 

@@ -100,7 +100,7 @@ export const AuthController = {
         }
     ),
 
-    //get new Token
+    //!get new Token
     getNewToken: catchAsyc(
         async (req: Request, res: Response) => {
             //get the refresh token from cookie 
@@ -133,6 +133,24 @@ export const AuthController = {
                 }
             })
         }
-    )
+    ),
 
-};
+    //!change pswd
+    changePassword: catchAsyc(
+        async (req: Request, res: Response) => {
+            const sessionToken = req.cookies['better-auth.session_token'];
+            if (!sessionToken) {
+                throw new AppError(status.UNAUTHORIZED, "Session token is missing");
+            }
+
+            const result = await AuthService.changePassword(req.body, sessionToken);
+
+            sendResponse(res, {
+                httpStatusCode: status.OK,
+                success: true,
+                message: "Password changed successfully",
+                result
+            })
+        }
+    ),
+}

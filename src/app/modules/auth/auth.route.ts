@@ -27,8 +27,16 @@ route.get(
 //!get new access token
 route.post(
     "/refresh-token",
-    AuthController.getNewToken)
+    AuthController.getNewToken
+)
 
+
+//! change pswd
+route.post(
+    "/change-password",
+    checkAuth(Role.ADMIN, Role.DOCTOR, Role.PATIENT, Role.SUPER_ADMIN),
+    AuthController.changePassword
+)
 
 
 
