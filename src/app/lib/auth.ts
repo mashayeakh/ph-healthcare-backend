@@ -5,6 +5,7 @@ import { Role, UserStatus } from "../../../prisma/generated/prisma/enums";
 import { envVars } from "../config/env";
 import ms, { StringValue } from "ms";
 import { bearer, emailOTP } from "better-auth/plugins";
+import { sendEmail } from "../utils/email";
 // If your Prisma file is located elsewhere, you can change the path
 
 export const auth = betterAuth({
@@ -50,13 +51,23 @@ export const auth = betterAuth({
                             email: email
                         }
                     })
-                    if(user && !user.emailVerified){
-                        // sendEmail({
-
-                        // })
+                    if (user && !user.emailVerified) {
+                        //now send the eamil with otp
+                        sendEmail({
+                            to: email,
+                            subject: "Your OTP for email verification",
+                            templateName: "otp",
+                            templateData: {
+                                name: user.name,
+                                otp: otp,
+                            }
+                        })
                     }
                 }
-            }
+            },
+            //valid for 2mins
+            expiresIn: 2 * 60,
+            otpLength: 6 // 6 digit otp
         })
     ],
     session: {

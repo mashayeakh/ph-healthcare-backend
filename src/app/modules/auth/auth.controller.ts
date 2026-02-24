@@ -197,5 +197,17 @@ export const AuthController = {
                 result
             })
         }
+    ),
+    verifyEmail: catchAsyc(
+        async (req: Request, res: Response) => {
+            const { email, otp } = req.body;
+            const result = await AuthService.verifedEmail(email, otp);
+            sendResponse(res, {
+                httpStatusCode: status.OK,
+                success: true,
+                message: "Email verified successfully",
+                result
+            })
+        }
     )
 }

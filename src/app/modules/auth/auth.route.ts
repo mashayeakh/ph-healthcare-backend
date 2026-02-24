@@ -2,6 +2,7 @@ import express from 'express';
 import { AuthController } from './auth.controller';
 import { checkAuth } from '@/app/middleware/checkAuth';
 import { Role } from '@prisma/prisma/enums';
+import { router } from 'better-auth/api';
 const route = express();
 
 
@@ -45,6 +46,12 @@ route.post(
     AuthController.logout
 )
 
+
+//!verify email
+route.post(
+    "/verify-email",
+    AuthController.verifyEmail
+)
 
 
 export const AuthRouter = route;
