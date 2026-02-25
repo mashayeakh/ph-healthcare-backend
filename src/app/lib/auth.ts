@@ -9,6 +9,9 @@ import { sendEmail } from "../utils/email";
 // If your Prisma file is located elsewhere, you can change the path
 
 export const auth = betterAuth({
+    baseURL:envVars.BETTER_AUTH_URL,
+    secret:envVars.BETTER_AUTH_SECRET,
+
     database: prismaAdapter(prisma, {
         provider: "postgresql",
 
@@ -19,12 +22,30 @@ export const auth = betterAuth({
         requireEmailVerification: true,
     },
 
+    socialProviders: {
+        google: {
+            clientId: envVars.GOOGLE_CLIENT_ID,
+            clientSecret: envVars.GOOGLE_CLIENT_SECRET,
+
+            mapProfileToUser: () => {
+                return {
+                    role: Role.PATIENT,
+                    status: UserStatus.ACTIVE,
+                    emailVerified: true,
+                    isDeleted: false,
+                    needPasswordChange: false,
+                    deletedAt: null,
+                }
+            }
+        }
+    },
+
+
 
     emailVerification: {
         sendOnSignUp: true,
         sendOnSignIn: true,
         autoSignInAfterVerification: true,
-
 
     },
 
@@ -33,9 +54,28 @@ export const auth = betterAuth({
         // process.env.BETTER_AUTH_URL || "http://localhost:5000"
         envVars.BETTER_AUTH_URL || `http://localhost:${envVars.PORT}`
     ],
-    // advanced: {
-    //     disableCSRFCheck: true
-    // },
+    advanced: {
+        // disableCSRFCheck: true
+        useSecureCookies: false,
+        cookies: {
+            state: {
+                attributes: {
+                    sameSite: "none",
+                    secure: true,
+                    httpOnly: true,
+                    path: "/"
+                }
+            },
+            sessionToken: {
+                attributes: {
+                    sameSite: "none",
+                    secure: true,
+                    httpOnly: true,
+                    path: "/"
+                }
+            }
+        }
+    }, 
 
     plugins: [
         bearer(),
@@ -101,6 +141,11 @@ export const auth = betterAuth({
             maxAge: 60 * 60 * 60 * 24 // 1d
         }
     },
+
+    redirectURLs: {
+        signIn: `${envVars.BETTER_AUTH_URL}/api/v1/auth/login/google/success`,
+    },
+
     user: {
         additionalFields: {
             role: {

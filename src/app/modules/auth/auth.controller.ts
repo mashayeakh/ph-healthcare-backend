@@ -10,7 +10,12 @@ import { envVars } from "@/app/config/env";
 import ms, { StringValue } from "ms";
 import { AppError } from "@/app/errorHelpers/AppError";
 import { clearCookie } from "@/app/utils/cookies";
+import { auth } from "@/app/lib/auth";
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 export const AuthController = {
@@ -239,4 +244,114 @@ export const AuthController = {
         }
     ),
 
+    //!google login
+    // api/v1/auth/login/google
+    //when login is done, redirect to frontend with the token and other details in query params like this
+    // api/v1/auth/login/google?redirect=/profile
+    // googleLogin: catchAsyc(
+    //     async (req: Request, res: Response) => {
+    //         const redirectPath = req.query.redirect || "/dashboard";
+
+    //         //encoding the url so that google let us redirect to it
+    //         const encodedRedirectPath = encodeURIComponent(redirectPath as string);
+
+    //         // const callbackURL = `${envVars.BETTER_AUTH_URL}/api/auth/login/google/success?redirect=${encodedRedirectPath}`;
+
+    //         const callbackURL = `${envVars.BETTER_AUTH_URL}/api/v1/auth/google/success?redirect=${encodedRedirectPath}`;
+
+
+    //         console.log("Call back url ", callbackURL)
+
+    //         res.render("google", {
+    //             callbackURL: callbackURL,
+    //             betterAuthURL: envVars.BETTER_AUTH_URL
+    //         })
+
+
+    //     }  
+    // ),
+
+
+    //!google login
+    googleLogin: catchAsyc(async (req: Request, res: Response) => {
+        const redirectPath = req.query.redirect || "/dashboard";
+        const encodedRedirectPath = encodeURIComponent(redirectPath as string);
+        const callbackURL = `${envVars.BETTER_AUTH_URL}/api/v1/auth/google/success?redirect=${encodedRedirectPath}`;
+
+        console.log("Call back url ", callbackURL);
+
+        // Force set the views directory on the app instance in the request
+        // This ensures the correct path is used for this specific render
+        const templatesPath = path.join(__dirname, '../../templates');
+        console.log('Setting template path for render:', templatesPath);
+
+        // Set it on the app instance
+        req.app.set('views', templatesPath);
+
+        // Also set it on the response object
+        res.app.set('views', templatesPath);
+
+        // Verify it's set
+        console.log('Current views directory:', req.app.get('views'));
+
+        res.render("google", {
+            callbackURL: callbackURL,
+            betterAuthURL: envVars.BETTER_AUTH_URL
+        });
+    }),
+    //!google Login Success
+    googleLoginSuccess: catchAsyc(
+        async (req: Request, res: Response) => {
+            const redirectPath = req.query.redirect as string || "/dashboard";
+
+            const sessionToken = req.cookies["better-auth.session_token"];
+            if (!sessionToken) {
+                return res.redirect(`${envVars.FRONTEND_URL}/login?error=oauth_failed`)
+            }
+
+            //get the session
+            const session = await auth.api.getSession({
+                headers: {
+                    "Cookie": `better-auth.session_token=${sessionToken}`
+                }
+            });
+
+            if (!session) {
+                return res.redirect(`${envVars.FRONTEND_URL}/login?error=no_session_found`)
+            }
+
+            if (session && !session.user) {
+                return res.redirect(`${envVars.FRONTEND_URL}/login?error=no_user_found`)
+            }
+
+            const result = await AuthService.googleLoginSuccess(session);
+            const {
+                accessToken,
+                refreshToken,
+            } = result
+
+            // set the cokkies
+            setAccessTokenCookie(res, accessToken)
+            setRefreshTokenCookie(res, refreshToken)
+
+
+            //check the valid path
+            const isValidRedirectPath = redirectPath.startsWith("/") && !redirectPath.startsWith("//");
+
+            const finalRedicrectPath = isValidRedirectPath ? redirectPath : "/dashboard";
+
+
+            res.redirect(`${envVars.FRONTEND_URL}${finalRedicrectPath}`)
+
+
+        }
+    ),
+    //! handleOAuthError
+    handleOAuthError: catchAsyc(
+        async (req: Request, res: Response) => {
+            //if any error occurs during the google login process, this route will handle it and redirect to frontend with error message
+            const error = req.query.error as string || "oauth_failed";
+            res.redirect(`${envVars.FRONTEND_URL}/login?error=${error}`)
+        }
+    )
 }

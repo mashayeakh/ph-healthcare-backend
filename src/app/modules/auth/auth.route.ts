@@ -65,5 +65,22 @@ route.post(
     AuthController.resetPassword
 )
 
+//!google login
+route.get(
+    "/login/google",
+    AuthController.googleLogin
+)
+//!google login success
+route.get(
+    "/google/success",
+    AuthController.googleLoginSuccess
+)
+//!if any error occurs
+route.get(
+    "/oauth/error",
+    AuthController.handleOAuthError
+)
+
+
 
 export const AuthRouter = route;

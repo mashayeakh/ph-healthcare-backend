@@ -278,6 +278,19 @@ export const AuthService = {
             }
         })
 
+        //need password change jodi true thake tahole amra tar needpassword change ke false kore dibo, karon user tar password change kore feleche.
+        if (userSession.user.needPasswordChange) {
+            await prisma.user.update({
+                where: {
+                    id: userSession.user.id
+                },
+                data: {
+                    needPasswordChange: false
+                }
+            })
+        }
+
+
         // generate new access token
         const accessToken = getAccessToken({
             userId: userSession.user.id,
@@ -399,11 +412,59 @@ export const AuthService = {
             }
         })
 
+        // if usser cant remember the pass and reset the pass with otp then we will also set the needPasswordChange to false, because he has already reset the pass, so no need to ask him to change the pass again.
+        if (isUserExist.needPasswordChange) {
+            await prisma.user.update({
+                where: { id: isUserExist.id },
+                data: { needPasswordChange: false }
+            })
+        }
+
         //when pass is reset then we will also revoke all the sessions of the user, so that he will be logged out from all the devices.
         await prisma.session.deleteMany({
             where: {
                 userId: isUserExist.id
             }
         })
+    },
+
+    //! google login succes
+    async googleLoginSuccess(session: Record<string, any>) {
+        //check if patient exist
+        const isPatientExist = await prisma.patient.findUnique({
+            where: {
+                id: session.user.id
+            }
+        })
+
+        if (!isPatientExist) {
+            //create patient 
+            await prisma.patient.create({
+                data: {
+                    userId: session.user.id,
+                    name: session.user.name,
+                    email: session.user.email,
+                }
+            })
+        }
+
+        //get the access token - short time
+        const accessToken = getAccessToken({
+            userId: session.user.id,
+            name: session.user.name,
+            email: session.user.email,
+
+        });
+        //get the refresh token - long time
+        const refreshToken = getRegreshtoken({
+            userId: session.user.id,
+            name: session.user.name,
+            email: session.user.email,
+        });
+
+        return {
+            accessToken,
+            refreshToken
+        }
     }
 } 
