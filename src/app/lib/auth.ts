@@ -44,6 +44,7 @@ export const auth = betterAuth({
         emailOTP({
             overrideDefaultEmailVerification: true,
             async sendVerificationOTP({ email, otp, type }) {
+                //otp , for email verificaton 
                 if (type === "email-verification") {
                     //fetch the email 
                     const user = await prisma.user.findUnique({
@@ -51,11 +52,32 @@ export const auth = betterAuth({
                             email: email
                         }
                     })
+
                     if (user && !user.emailVerified) {
                         //now send the eamil with otp
                         sendEmail({
                             to: email,
                             subject: "Your OTP for email verification",
+                            templateName: "otp",
+                            templateData: {
+                                name: user.name,
+                                otp: otp,
+                            }
+                        })
+                    }
+                }
+                //otp , for forget password
+                else if (type === "forget-password") {
+                    //fetch the email 
+                    const user = await prisma.user.findUnique({
+                        where: {
+                            email: email
+                        }
+                    })
+                    if (user) {
+                        sendEmail({
+                            to: email,
+                            subject: "Your OTP for password reset",
                             templateName: "otp",
                             templateData: {
                                 name: user.name,

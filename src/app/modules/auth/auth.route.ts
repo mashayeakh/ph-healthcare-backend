@@ -53,5 +53,17 @@ route.post(
     AuthController.verifyEmail
 )
 
+//!forget password
+route.post(
+    "/forgot-password",
+    AuthController.forgotPassword
+)
+
+//!reset password
+route.post(
+    "/reset-password",
+    AuthController.resetPassword
+)
+
 
 export const AuthRouter = route;

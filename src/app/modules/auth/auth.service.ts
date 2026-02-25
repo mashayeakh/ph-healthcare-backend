@@ -340,5 +340,70 @@ export const AuthService = {
                 }
             })
         }
+    },
+
+    //!forget password
+    async forgetPassword(email: string) {
+        const isUserExist = await prisma.user.findUnique({
+            where: {
+                email: email
+            }
+        })
+
+        if (!isUserExist) {
+            throw new AppError(status.NOT_FOUND, "User not found")
+        }
+
+        if (isUserExist && !isUserExist.emailVerified) {
+            throw new AppError(status.BAD_REQUEST, "Email is not verified. ")
+        }
+
+        if (isUserExist && isUserExist.isDeleted) {
+            throw new AppError(status.BAD_REQUEST, "User is deleted. ")
+        }
+
+        //Request pass for reset email otp from better auth
+        return await auth.api.requestPasswordResetEmailOTP({
+            body: {
+                email: email,
+            }
+        })
+    },
+
+    //!Reset password
+    async resetPassword(email: string, otp: string, newPassword: string) {
+        const isUserExist = await prisma.user.findUnique({
+            where: {
+                email: email
+            }
+        })
+
+        if (!isUserExist) {
+            throw new AppError(status.NOT_FOUND, "User not found")
+        }
+
+        if (isUserExist && !isUserExist.emailVerified) {
+            throw new AppError(status.BAD_REQUEST, "Email is not verified. ")
+        }
+
+        if (isUserExist && isUserExist.isDeleted) {
+            throw new AppError(status.BAD_REQUEST, "User is deleted. ")
+        }
+
+        //now actual pass change pert 
+        await auth.api.resetPasswordEmailOTP({
+            body: {
+                email: email,
+                otp: otp,
+                password: newPassword
+            }
+        })
+
+        //when pass is reset then we will also revoke all the sessions of the user, so that he will be logged out from all the devices.
+        await prisma.session.deleteMany({
+            where: {
+                userId: isUserExist.id
+            }
+        })
     }
 } 
