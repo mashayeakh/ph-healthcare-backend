@@ -49,6 +49,10 @@ console.log('Setting views to:', viewsPath);
 app.set("views", viewsPath);
 console.log('Express views directory:', app.get('views'));
 
+
+
+
+
 // THEN add better-auth middleware
 app.use("/api/auth/", toNodeHandler(auth))
 
@@ -59,8 +63,16 @@ app.use(express.urlencoded({ extended: true }));
 
 // Middleware to parse JSON bodies
 app.use(cors({
-    origin: process.env.BETTER_AUTH_URL || `http://localhost:${envVars.PORT}`,
-    credentials: true // Important for cookies
+    // origin: process.env.BETTER_AUTH_URL || `http://localhost:${envVars.PORT}`,
+    origin: [
+        envVars.FRONTEND_URL,
+        envVars.BETTER_AUTH_URL,
+        "http://localhost:3000",
+        "http://localhost:5000"
+    ],
+    credentials: true, // Important for cookies
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization",] 
 }));
 
 app.use(express.json());
