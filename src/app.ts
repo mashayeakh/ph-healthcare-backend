@@ -42,25 +42,18 @@ export const app: Application = express()
 
 
 
-console.log('__dirname:', __dirname);
+// console.log('__dirname:', __dirname);
 app.set("view engine", "ejs");
 const viewsPath = path.join(__dirname, "app", "templates");
-console.log('Setting views to:', viewsPath);
+// console.log('Setting views to:', viewsPath);
 app.set("views", viewsPath);
-console.log('Express views directory:', app.get('views'));
+// console.log('Express views directory:', app.get('views'));
 
 
 
 
 
 // THEN add better-auth middleware
-app.use("/api/auth/", toNodeHandler(auth))
-
-
-
-// Enable URL-encoded form data parsing
-app.use(express.urlencoded({ extended: true }));
-
 // Middleware to parse JSON bodies
 app.use(cors({
     // origin: process.env.BETTER_AUTH_URL || `http://localhost:${envVars.PORT}`,
@@ -72,11 +65,21 @@ app.use(cors({
     ],
     credentials: true, // Important for cookies
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization",] 
+    allowedHeaders: ["Content-Type", "Authorization",]
 }));
+
+
+app.use("/api/auth/", toNodeHandler(auth))
+
+// Enable URL-encoded form data parsing
+app.use(express.urlencoded({ extended: true }));
+
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+
+
 
 app.use("/api/v1/", route);
 
