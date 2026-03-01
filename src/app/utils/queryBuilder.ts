@@ -4,7 +4,7 @@
 //TWhereInput - its like what you fiter like isDeleted, name etc... 
 // TIncludeInput - its like what you want to include in the response like appointments, prescriptions etc...
 
-import { IQueryConfig, IQueryParams, PrismaCountArgs, PrismaFindManyArgs, PrismaModelDelegate, PrismaStringFilter, PrismaWhereConditions } from "../interfaces/query.interface"
+import { IQueryConfig, IQueryParams, PrismaCountArgs, PrismaFindManyArgs, PrismaModelDelegate, PrismaNumberFilter, PrismaStringFilter, PrismaWhereConditions } from "../interfaces/query.interface"
 
 //now declare a few private proereties in the class
 export class QueryBuilder<
@@ -102,4 +102,163 @@ export class QueryBuilder<
 
         return this;
     }
+
+    //filter method
+    filter(): this {
+
+
+        // doctors?specialty=cardiology&appoitmentFee[lt]=100
+        const { filterableFields } = this.config;
+        const excludeFiled = [
+            'searchTerm',
+            'page',
+            'limit',
+            'sortBy',
+            'sortOrder',
+            'fields',
+            'includes'
+        ]
+        const filterParams: Record<string, unknown> = {};
+
+        //{specialty:'cardiology', appointmentFee:{lt:100}}
+        Object.keys(this.queryParams).forEach((key) => {
+            if (!excludeFiled.includes(key)) {
+                filterParams[key] = this.queryParams[key];
+            }
+        })
+
+
+        const queryWhere = this.query.where as Record<string, unknown>
+        const countQueryWhere = this.countQuery.where as Record<string, unknown>
+
+        Object.keys(filterParams).forEach((key) => {
+            const value = filterParams[key];
+
+            if (value === undefined || value === "") {
+                return;
+            }
+
+            const isAllowedField =
+                !filterableFields ||
+                filterableFields.length === 0 ||
+                filterableFields.includes(key)
+
+            if (!isAllowedField) {
+                return;
+            }
+
+            //doctotFieldrelatedFilds=['specialties.specialty.title','appointmentFee']
+
+            //doctors?user.name=jhon=>{user:{name:"jhon"}}
+            if (key.includes(".")) {
+                const parts = key.split(".");
+
+                if (parts.length === 2) {
+                    const [relation, nestedField] = parts;
+
+                    queryWhere[relation] = {
+                        [nestedField]: value
+                    }
+
+                    countQueryWhere[relation] = {
+                        [nestedField]: value
+                    }
+                } else if (parts.length === 3) {
+                    const [relation, nestedRelation, nestedField] = parts;
+
+                    queryWhere[relation] = {
+                        [nestedRelation]: {
+                            [nestedField]: value
+                        }
+                    }
+
+                    countQueryWhere[relation] = {
+                        [nestedRelation]: {
+                            [nestedField]: value
+                        }
+                    }
+                }
+            } //for direct fidles
+            else {
+                queryWhere[key] = value
+                countQueryWhere[key] = value
+
+            }
+
+
+            //for range
+            if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+                queryWhere[key] = this.parseFilterValue(value);
+                countQueryWhere[key] = this.parseFilterValue(value)
+                return;
+            }
+
+
+            //direct value parsing like true, false, number, array etc..
+            queryWhere[key] = this.parseFilterValue(value);
+            countQueryWhere[key] = this.parseFilterValue(value)
+        })
+
+
+
+        return this;
+    }
+
+    private parseFilterValue(value: unknown): unknown {
+        if (value === 'true') {
+            return true;
+        }
+        if (value === 'false') {
+            return false;
+        }
+        if (typeof value === 'string' && !isNaN(Number(value)) && value !== "") {
+            return Number(value)
+        }
+
+        if (Array.isArray(value)) {
+            return {
+                in: value.map((item) => this.parseFilterValue(item))
+            }
+        }
+        return value;
+    }
+
+    private parseRangeFilter(value: Record<string, string | number>): PrismaNumberFilter | PrismaStringFilter | Record<string, unknown> {
+        const rangeQuery: Record<string, string | number | (string | number)[]> = {}
+
+        Object.keys(value).forEach((op) => {
+            const operatorVal = value[op];
+
+            const parsedVal: string | number = typeof operatorVal === "string" && !isNaN(Number(operatorVal)) ? Number(operatorVal) : operatorVal;
+
+            switch (op) {
+                case "lt":
+                case "lte":
+                case "gt":
+                case "gte":
+                case "equals":
+                case "not":
+                case "contains":
+                case "startsWith":
+                case "endsWith":
+                    rangeQuery[op] = parsedVal;
+                    break;
+
+                case "in":
+                case "notIn":
+                    if (Array.isArray(operatorVal)) {
+                        rangeQuery[op] = operatorVal;
+                    } else {
+                        rangeQuery[operatorVal] = [parsedVal]
+                    }
+                    break;
+                default:
+                    break;
+
+            }
+        });
+
+        return Object.keys(rangeQuery).length > 0 ? rangeQuery : value
+    }
 }
+
