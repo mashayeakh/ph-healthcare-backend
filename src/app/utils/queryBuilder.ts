@@ -19,7 +19,7 @@ export class QueryBuilder<
     private skip: number = 0
     private sortBy: string = "createdAt"
     private sortOrder: "asc" | "desc" = "desc"
-    private selectFields: Record<string, boolean>
+    private selectFields: Record<string, boolean | undefined> = {}
 
 
     //call the constructor to initialize the query and countQuery
@@ -253,10 +253,10 @@ export class QueryBuilder<
 
         // doct.sortBy=user.name&sortOrder=asc=>orderBy:{user:{name:"asc"}}}
 
-        if(sortBy.includes(".") ){
+        if (sortBy.includes(".")) {
             const parts = sortBy.split(".");
 
-            if(parts.length === 2){
+            if (parts.length === 2) {
                 const [relation, nestedField] = parts;
 
                 this.query.orderBy = {
@@ -264,7 +264,7 @@ export class QueryBuilder<
                         [nestedField]: sortOrder
                     }
                 }
-            }else if(parts.length === 3){
+            } else if (parts.length === 3) {
                 const [relation, nestedRelation, nestedField] = parts;
 
                 this.query.orderBy = {
@@ -274,7 +274,7 @@ export class QueryBuilder<
                         }
                     }
                 }
-            }else{
+            } else {
                 this.query.orderBy = {
                     [sortBy]: sortOrder
                 }
@@ -282,6 +282,31 @@ export class QueryBuilder<
         }
 
 
+        return this;
+    }
+
+    fields(): this {
+
+
+        const fieldsParam = this.queryParams.fields;
+
+        // no nested fields like ?fields=name,email => select:{name:true,email:true}
+        if (fieldsParam && typeof fieldsParam === "string") {
+            const fieldsArray = fieldsParam?.split(",").map((field => field.trim()))
+            this.selectFields = {};
+
+            fieldsArray?.forEach((field) => {
+
+                if (this.selectFields) {
+                    this.selectFields[field] = true
+                }
+
+            })
+
+            this.query.select = this.selectFields as Record<string, boolean | Record<string, unknown>>;
+
+            delete this.query.include;
+        }
         return this;
     }
 
