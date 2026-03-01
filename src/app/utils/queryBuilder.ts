@@ -153,42 +153,61 @@ export class QueryBuilder<
             if (key.includes(".")) {
                 const parts = key.split(".");
 
+                if (filterableFields && !filterableFields.includes(key)) {
+                    return;
+                }
+
+
+
                 if (parts.length === 2) {
                     const [relation, nestedField] = parts;
 
+                    if (!queryWhere[relation]) {
+                        queryWhere[relation] = {};
+                        countQueryWhere[relation] = {};
+                    }
+
                     queryWhere[relation] = {
-                        [nestedField]: value
+                        [nestedField]: this.parseFilterValue(value)
                     }
 
                     countQueryWhere[relation] = {
-                        [nestedField]: value
+                        [nestedField]: this.parseFilterValue(value)
                     }
+                    return;
                 } else if (parts.length === 3) {
                     const [relation, nestedRelation, nestedField] = parts;
 
+                    if (!queryWhere[relation]) {
+                        queryWhere[relation] = {};
+                        countQueryWhere[relation] = {};
+                    }
+
                     queryWhere[relation] = {
                         [nestedRelation]: {
-                            [nestedField]: value
+                            [nestedField]: this.parseFilterValue(value)
                         }
                     }
 
                     countQueryWhere[relation] = {
                         [nestedRelation]: {
-                            [nestedField]: value
+                            [nestedField]: this.parseFilterValue(value)
                         }
                     }
+                    return
                 }
             } //for direct fidles
             else {
-                queryWhere[key] = value
-                countQueryWhere[key] = value
+                queryWhere[key] = this.parseFilterValue(value)
+                countQueryWhere[key] = this.parseFilterValue(value)
 
+                return;
             }
 
 
-            //for range
+            //for range filter
             if (typeof value === "object" && value !== null && !Array.isArray(value)) {
-                queryWhere[key] = this.parseFilterValue(value);
+                queryWhere[key] = this.parseFilterValue(value as Record<string, string | number>);
                 countQueryWhere[key] = this.parseFilterValue(value)
                 return;
             }
@@ -199,10 +218,74 @@ export class QueryBuilder<
             countQueryWhere[key] = this.parseFilterValue(value)
         })
 
+        return this;
+    }
+
+    //pagination
+    paginate(): this {
+
+        //convert the page into number
+        const page = Number(this.queryParams.page) || 1
+        const limit = Number(this.queryParams.limit) || 1
+
+        this.page = page;
+        this.limit = limit;
+        this.skip = (page - 1) * limit
+
+        this.query.skip = this.skip;
+        this.query.take = this.limit
+
+        return this;
+    }
+
+
+    sort(): this {
+
+        const sortBy = this.queryParams.sortBy || "createdAt"
+        const sortOrder = this.queryParams.sortOrder === "asc" ? "asc" : "desc"
+
+        // this.query.orderBy = {
+        //     [sortBy]: sortOrder
+        // }
+
+        this.sortBy = sortBy;
+        this.sortOrder = sortOrder
+
+        // doct.sortBy=user.name&sortOrder=asc=>orderBy:{user:{name:"asc"}}}
+
+        if(sortBy.includes(".") ){
+            const parts = sortBy.split(".");
+
+            if(parts.length === 2){
+                const [relation, nestedField] = parts;
+
+                this.query.orderBy = {
+                    [relation]: {
+                        [nestedField]: sortOrder
+                    }
+                }
+            }else if(parts.length === 3){
+                const [relation, nestedRelation, nestedField] = parts;
+
+                this.query.orderBy = {
+                    [relation]: {
+                        [nestedRelation]: {
+                            [nestedField]: sortOrder
+                        }
+                    }
+                }
+            }else{
+                this.query.orderBy = {
+                    [sortBy]: sortOrder
+                }
+            }
+        }
 
 
         return this;
     }
+
+
 
     private parseFilterValue(value: unknown): unknown {
         if (value === 'true') {
