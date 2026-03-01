@@ -4,7 +4,7 @@
 //TWhereInput - its like what you fiter like isDeleted, name etc... 
 // TIncludeInput - its like what you want to include in the response like appointments, prescriptions etc...
 
-import { IQueryConfig, IQueryParams, PrismaCountArgs, PrismaFindManyArgs, PrismaModelDelegate, PrismaNumberFilter, PrismaStringFilter, PrismaWhereConditions } from "../interfaces/query.interface"
+import { IQueryConfig, IQueryParams, IQueryResult, PrismaCountArgs, PrismaFindManyArgs, PrismaModelDelegate, PrismaNumberFilter, PrismaStringFilter, PrismaWhereConditions } from "../interfaces/query.interface"
 
 //now declare a few private proereties in the class
 export class QueryBuilder<
@@ -42,62 +42,127 @@ export class QueryBuilder<
     }
 
     //search method
+    // search(): this {
+    //     const { searchTerm } = this.queryParams;
+    //     const { searchableFields } = this.config;
+    //     //doctorSearchableFields = ['user.name', 'user.email', 'specialization.name']
+    //     //check if searchTerm, searchableFields exists and searchabfleFields length is greater than 0
+    //     if (searchTerm && searchableFields && searchableFields.length > 0) {
+    //         const searchConditions: Record<string, unknown>[] =
+    //             searchableFields.map((field) => {
+    //                 if (field.includes(".")) {
+    //                     const parts = field.split(".")
+
+    //                     if (parts.length === 2) { // specialties.spcialty.description
+    //                         const [relation, nestedField] = parts;
+    //                         const strignFilter: PrismaStringFilter = {
+    //                             contains: searchTerm,
+    //                             mode: "insensitive" as const
+    //                         }
+
+    //                         return {
+    //                             [relation]: {
+    //                                 [nestedField]: strignFilter
+    //                             }
+    //                         }
+
+    //                     } else if (parts.length === 3) {
+    //                         const [relation, nestedRelation, nestedField] = parts;
+    //                         const strignFilter: PrismaStringFilter = {
+    //                             contains: searchTerm,
+    //                             mode: "insensitive" as const
+    //                         }
+
+    //                         return {
+    //                             [relation]: {
+    //                                 [nestedRelation]: {
+    //                                     [nestedField]: strignFilter
+    //                                 }
+    //                             }
+    //                         }
+    //                     }
+
+    //                     //direct fileds like name,email etc..
+    //                     const stringFilter: PrismaStringFilter = {
+    //                         contains: searchTerm,
+    //                         mode: "insensitive" as const
+    //                     }
+    //                     return {
+    //                         [field]: stringFilter
+    //                     }
+    //                 }
+    //             })
+
+    //         const whereConditios = this.query.where as PrismaWhereConditions
+    //         whereConditios.OR = searchConditions;
+    //         const countWhereConditions = this.countQuery.where as PrismaWhereConditions
+
+
+    //     }
+
+    //     return this;
+    // }
+
     search(): this {
         const { searchTerm } = this.queryParams;
         const { searchableFields } = this.config;
-        //doctorSearchableFields = ['user.name', 'user.email', 'specialization.name']
-        //check if searchTerm, searchableFields exists and searchabfleFields length is greater than 0
+        // doctorSearchableFields = ['user.name', 'user.email', 'specialties.specialty.title' , 'specialties.specialty.description']
         if (searchTerm && searchableFields && searchableFields.length > 0) {
-            const searchConditions: Record<string, unknown>[] =
-                searchableFields.map((field) => {
-                    if (field.includes(".")) {
-                        const parts = field.split(".")
+            const searchConditions: Record<string, unknown>[] = searchableFields.map((field) => {
+                if (field.includes(".")) {
+                    const parts = field.split(".");
 
-                        if (parts.length === 2) { // specialties.spcialty.description
-                            const [relation, nestedField] = parts;
-                            const strignFilter: PrismaStringFilter = {
-                                contains: searchTerm,
-                                mode: "insensitive" as const
+                    if (parts.length === 2) {
+                        const [relation, nestedField] = parts;
+
+                        const stringFilter: PrismaStringFilter = {
+                            contains: searchTerm,
+                            mode: 'insensitive' as const,
+                        }
+
+                        return {
+                            [relation]: {
+                                [nestedField]: stringFilter
                             }
+                        }
+                    } else if (parts.length === 3) {
+                        const [relation, nestedRelation, nestedField] = parts;
 
-                            return {
-                                [relation]: {
-                                    [nestedField]: strignFilter
-                                }
-                            }
+                        const stringFilter: PrismaStringFilter = {
+                            contains: searchTerm,
+                            mode: 'insensitive' as const,
+                        }
 
-                        } else if (parts.length === 3) {
-                            const [relation, nestedRelation, nestedField] = parts;
-                            const strignFilter: PrismaStringFilter = {
-                                contains: searchTerm,
-                                mode: "insensitive" as const
-                            }
-
-                            return {
-                                [relation]: {
+                        return {
+                            [relation]: {
+                                some: {
                                     [nestedRelation]: {
-                                        [nestedField]: strignFilter
+                                        [nestedField]: stringFilter
                                     }
                                 }
                             }
                         }
-
-                        //direct fileds like name,email etc..
-                        const stringFilter: PrismaStringFilter = {
-                            contains: searchTerm,
-                            mode: "insensitive" as const
-                        }
-                        return {
-                            [field]: stringFilter
-                        }
                     }
-                })
 
-            const whereConditios = this.query.where as PrismaWhereConditions
-            whereConditios.OR = searchConditions;
-            const countWhereConditions = this.countQuery.where as PrismaWhereConditions
+                }
+                // direct field
+                const stringFilter: PrismaStringFilter = {
+                    contains: searchTerm,
+                    mode: 'insensitive' as const,
+                }
 
+                return {
+                    [field]: stringFilter
+                }
+            }
+            )
 
+            const whereConditions = this.query.where as PrismaWhereConditions
+
+            whereConditions.OR = searchConditions;
+
+            const countWhereConditions = this.countQuery.where as PrismaWhereConditions;
+            countWhereConditions.OR = searchConditions;
         }
 
         return this;
@@ -358,6 +423,73 @@ export class QueryBuilder<
             ...result
         }
         return this;
+    }
+
+
+    //wher method to get the where conditions for findMany and count
+    where(condition: TWhereInput): this {
+
+        this.query.where = this.deepMerge(this.query.where as Record<string, unknown>, condition as Record<string, unknown>);
+
+        this.countQuery.where = this.deepMerge(this.countQuery.where as Record<string, unknown>, condition as Record<string, unknown>)
+
+        return this;
+    }
+
+
+
+    //execute the query and return the result
+    async execute(): Promise<IQueryResult<T>> {
+        const [total, data] = await Promise.all([
+            this.modelName.count(this.countQuery as Parameters<typeof this.modelName.count>[0]),
+
+            this.modelName.findMany(this.query as Parameters<typeof this.modelName.findMany>[0])
+        ])
+
+        const totalPages = Math.ceil(total / this.limit)
+
+        return {
+            data: data as T[],
+            meta: {
+                total,
+                totalPages,
+                page: this.page,
+                limit: this.limit
+            }
+        }
+    }
+
+
+    async count(): Promise<number> {
+        return await this.modelName.count(
+            this.countQuery as Parameters<typeof this.modelName.count>[0]
+        )
+    }
+
+    //for debugging purpose
+    getQuery(): PrismaFindManyArgs {
+        return this.query;
+    }
+
+
+    // deep merge method to merge the where conditions for findMany and count
+    private deepMerge(target: Record<string, unknown>, source: Record<string, unknown>): Record<string, unknown> {
+        const result = {
+            ...target
+        }
+        for (const key in source) {
+            {
+                if (source[key] && typeof source[key] === "object" && !Array.isArray(source[key])) {
+                    if (result[key] && typeof result[key] === "object" && !Array.isArray(result[key])) {
+                        //recursive merge for nested objects
+                        result[key] = this.deepMerge(result[key] as Record<string, unknown>, source[key] as Record<string, unknown>);
+                    } else {
+                        result[key] = source[key];
+                    }
+                }
+            }
+        }
+        return result;
     }
 
 

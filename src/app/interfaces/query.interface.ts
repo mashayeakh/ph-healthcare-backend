@@ -95,3 +95,13 @@ export interface PrismaNumberFilter {
     not?: PrismaNumberFilter | number;
 }
 
+//query result 
+export interface IQueryResult<T>{
+    data:T[],
+    meta:{
+        total: number,
+        page: number,
+        limit: number,
+        totalPages: number
+    }
+}
