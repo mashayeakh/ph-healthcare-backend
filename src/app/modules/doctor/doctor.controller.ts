@@ -4,21 +4,24 @@ import { sendResponse } from "@/app/utils/sendResponse";
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import status from "http-status";
 import { DoctorService } from "./doctor.service";
+import { IQueryParams } from "@/app/interfaces/query.interface";
 
 
 
 export const DoctorController = {
     viewAllDoctor: catchAsyc(
         async (req: Request, res: Response) => {
-            const data = await DoctorService.getAllDoctors()
+            const query = req.query;
+            const data = await DoctorService.getAllDoctors(query as IQueryParams)
             sendResponse(res, {
                 httpStatusCode: status.OK,
                 success: true,
                 message: "All doctor fetched successfully",
-                result: {
-                    count: data.length,
-                    data: data
-                }
+                result: data
+                // result: {
+                //     // count: data.length,
+                //     data: data
+                // }
             })
         }
     ),

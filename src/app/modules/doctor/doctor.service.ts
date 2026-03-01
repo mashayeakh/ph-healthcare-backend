@@ -2,49 +2,85 @@ import { prisma } from "@/app/lib/prisma"
 import { IUpdateDoctorPayload } from "./dto/updateDoctor.dto"
 import { AppError } from "@/app/errorHelpers/AppError"
 import status from "http-status"
+import { IQueryParams } from "@/app/interfaces/query.interface"
+import { QueryBuilder } from "@/app/utils/queryBuilder"
+import { doctorFilterableFields, doctorIncludeConfig, doctorSearchableFields } from "./doct.constant"
+import { Doctor, Prisma } from "@prisma/prisma/client"
 
 export const DoctorService = {
     //!get all doctors
-    async getAllDoctors() {
-        const result = await prisma.doctor.findMany({
-            where: {
-                isDeleted: false,
-            },
-            orderBy: {
-                createdAt: "desc"
-            },
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                profilePhoto: true,
-                contactNumber: true,
-                registrationNumber: true,
-                experience: true,
-                gender: true,
-                appointmentFee: true,
-                qualification: true,
-                currentWorkingPlace: true,
-                designation: true,
-                avgRating: true,
-                createdAt: true,
-                updatedAt: true,
-                specialties: {
-                    select: {
-                        specialty: {
-                            select: {
-                                id: true,
-                                title: true,
-                            },
-                        },
-                    },
-                },
+    async getAllDoctors(query: IQueryParams) {
+        // const result = await prisma.doctor.findMany({
+        //     where: {
+        //         isDeleted: false,
+        //     },
+        //     orderBy: {
+        //         createdAt: "desc"
+        //     },
+        //     select: {
+        //         id: true,
+        //         name: true,
+        //         email: true,
+        //         profilePhoto: true,
+        //         contactNumber: true,
+        //         registrationNumber: true,
+        //         experience: true,
+        //         gender: true,
+        //         appointmentFee: true,
+        //         qualification: true,
+        //         currentWorkingPlace: true,
+        //         designation: true,
+        //         avgRating: true,
+        //         createdAt: true,
+        //         updatedAt: true,
+        //         specialties: {
+        //             select: {
+        //                 specialty: {
+        //                     select: {
+        //                         id: true,
+        //                         title: true,
+        //                     },
+        //                 },
+        //             },
+        //         },
+        //     }
+        // })
+        // return result.map((doctor) => ({
+        //     ...doctor,
+        //     specialties: doctor.specialties.map((s) => s.specialty)
+        // }))
+
+        const queryBuilder = new QueryBuilder<Doctor, Prisma.DoctorWhereInput, Prisma.DoctorInclude>(
+            prisma.doctor,
+            query,
+            {
+                searchableFields: doctorSearchableFields,
+                filterableFields: doctorFilterableFields
             }
-        })
-        return result.map((doctor) => ({
-            ...doctor,
-            specialties: doctor.specialties.map((s) => s.specialty)
-        }))
+        )
+
+        const result = await queryBuilder
+            .search()
+            .filter()
+            .where({
+                isDeleted: false,
+            })
+            .include({
+                user: true,
+                specialties: true,
+                // specialties: {
+                //     include: {
+                //         specialty: true
+                //     }
+                // }
+            })
+            .dynamicInclude(doctorIncludeConfig)
+            .paginate()
+            .sort()
+            .fields()
+            .execute()
+
+        return result
     },
 
     //!get doctor by id 
