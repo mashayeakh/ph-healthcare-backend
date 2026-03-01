@@ -10,7 +10,7 @@ import { IQueryConfig, IQueryParams, PrismaCountArgs, PrismaFindManyArgs, Prisma
 export class QueryBuilder<
     T,
     TWhereInput = Record<string, unknown>,
-    TIncludeInput = Record<string, unknown>
+    TInclude = Record<string, unknown>
 > {
     private query: PrismaFindManyArgs
     private countQuery: PrismaCountArgs
@@ -310,6 +310,55 @@ export class QueryBuilder<
         return this;
     }
 
+    include(relation: TInclude): this {
+
+        if (this.selectFields) {
+            return this;
+        }
+
+        // if filets method is , include method will be ignored to prevent the conflict between select and include.
+        this.query.include = {
+            ...this.query.include as Record<string, unknown>,
+            ...(relation as Record<string, unknown>)
+        }
+
+        return this;
+    }
+
+    //dynamic include
+    dynamicInclude(
+        includeConfig: Record<string, unknown>,
+        defaultInclude?: string[]
+    ): this {
+
+        if (this.selectFields) {
+            return this;
+        }
+
+        const result: Record<string, unknown> = {}
+        defaultInclude?.forEach((filed) => {
+            if (includeConfig[filed]) {
+                result[filed] = includeConfig[filed]
+            }
+        })
+
+        const includeParam = this.queryParams.includes as string | undefined
+
+        if (includeParam && typeof includeParam === "string") {
+            const requestRelations = includeParam.split(",").map((relation) => relation.trim());
+
+            requestRelations.forEach(relation => {
+                if (includeConfig[relation]) {
+                    result[relation] = includeConfig[relation]
+                }
+            })
+        }
+        this.query.include = {
+            ...(this.query.include as Record<string, unknown>),
+            ...result
+        }
+        return this;
+    }
 
 
     private parseFilterValue(value: unknown): unknown {
