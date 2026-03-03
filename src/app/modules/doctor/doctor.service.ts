@@ -50,6 +50,7 @@ export const DoctorService = {
         //     specialties: doctor.specialties.map((s) => s.specialty)
         // }))
 
+        //* using query builder to handle all the query params like search, filter, pagination, sort, fields and include
         const queryBuilder = new QueryBuilder<Doctor, Prisma.DoctorWhereInput, Prisma.DoctorInclude>(
             prisma.doctor,
             query,
