@@ -68,19 +68,19 @@ export const DoctorService = {
             })
             .include({
                 user: true,
-                specialties: true,
-                // specialties: {
-                //     include: {
-                //         specialty: true
-                //     }
-                // }
+                // specialties: true,
+                specialties: {
+                    include: {
+                        specialty: true
+                    }
+                }
             })
             .dynamicInclude(doctorIncludeConfig)
             .paginate()
             .sort()
             .fields()
             .execute()
-
+   
         return result
     },
 

@@ -17,7 +17,7 @@ const route = express();
 route.post(
     "/",
     // checkAuth(Role.ADMIN, Role.SUPER_ADMIN, Role.DOCTOR),
-    multerUpload.single("file"),
+    // multerUpload.single("file"),
     SpecialtyController.specialtyCreate
 );
 

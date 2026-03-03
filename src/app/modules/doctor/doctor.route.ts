@@ -8,7 +8,7 @@ const route = express();
 //!get all doctors
 route.get(
     "/",
-    checkAuth(Role.ADMIN, Role.SUPER_ADMIN, Role.DOCTOR),
+    // checkAuth(Role.ADMIN, Role.SUPER_ADMIN, Role.DOCTOR),
     DoctorController.viewAllDoctor
 );
 

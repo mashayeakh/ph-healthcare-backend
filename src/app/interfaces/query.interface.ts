@@ -51,8 +51,8 @@ export interface IQueryParams {
 
 //for the config
 export interface IQueryConfig {
-    searchableFields: string[],
-    filterableFields: string[]
+    searchableFields?: string[],
+    filterableFields?: string[]
 }
 
 
@@ -96,9 +96,9 @@ export interface PrismaNumberFilter {
 }
 
 //query result 
-export interface IQueryResult<T>{
-    data:T[],
-    meta:{
+export interface IQueryResult<T> {
+    data: T[],
+    meta: {
         total: number,
         page: number,
         limit: number,

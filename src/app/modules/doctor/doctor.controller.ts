@@ -17,7 +17,8 @@ export const DoctorController = {
                 httpStatusCode: status.OK,
                 success: true,
                 message: "All doctor fetched successfully",
-                result: data
+                result: data,
+                meta: data.meta
                 // result: {
                 //     // count: data.length,
                 //     data: data

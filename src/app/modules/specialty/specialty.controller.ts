@@ -14,43 +14,43 @@ export const SpecialtyController = {
 
     //!create specialty
 
-    // specialtyCreate: catchAsyc(
-    //     async (req: Request, res: Response) => {
-    //         console.log("----REEEEED Body ", req.body)
-    //         console.log("FILE:", req.file);
-    //         console.log("BODY:", req.body);
-    //         const created = await SpecialtyService.createSpecialty(req.body);
-    //         sendResponse(res, {
-    //             httpStatusCode: status.OK,
-    //             success: true,
-    //             message: "Specialty created successfully!!",
-    //             // result:created
-    //         })
-    //     }
-    // ),
+    specialtyCreate: catchAsyc(
+        async (req: Request, res: Response) => {
+            console.log("----REEEEED Body ", req.body)
+            console.log("FILE:", req.file);
+            console.log("BODY:", req.body);
+            const created = await SpecialtyService.createSpecialty(req.body);
+            sendResponse(res, {
+                httpStatusCode: status.OK,
+                success: true,
+                message: "Specialty created successfully!!",
+                // result:created
+            })
+        }
+    ),
 
 
-    specialtyCreate: catchAsyc(async (req, res) => {
-        if (!req.file) throw new Error("File not provided");
+    // specialtyCreate: catchAsyc(async (req, res) => {
+    // if (!req.file) throw new Error("File not provided");
 
-        const result = await new Promise((resolve, reject) => {
-            const stream = cloudinaryUpload.uploader.upload_stream(
-                { folder: "ph-healthcare/images" },
-                (error, result) => {
-                    if (error) return reject(error);
-                    resolve(result);
-                }
-            );
+    // const result = await new Promise((resolve, reject) => {
+    //     const stream = cloudinaryUpload.uploader.upload_stream(
+    //         { folder: "ph-healthcare/images" },
+    //         (error, result) => {
+    //             if (error) return reject(error);
+    //             resolve(result);
+    //         }
+    //     );
 
-            if (!req.file || !req.file.buffer) return reject(new Error("File buffer is empty"));
-            
-            streamifier.createReadStream(req.file.buffer).pipe(stream);
-        });
+    //     if (!req.file || !req.file.buffer) return reject(new Error("File buffer is empty"));
 
-        console.log(result);
+    //     streamifier.createReadStream(req.file.buffer).pipe(stream);
+    // });
 
-        res.json(result);
-    })
+    // console.log(result);
+
+    // res.json(result);
+
 
     // specialtyCreate: async (req: Request, res: Response) => {
     //     try {
@@ -215,7 +215,7 @@ export const SpecialtyController = {
     //     }
     // },
 
-    ,
+
     //!get specialty
     getAllSpecialty: catchAsyc(
         async (req: Request, res: Response) => {
