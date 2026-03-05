@@ -318,7 +318,6 @@ export type ScheduleScalarFieldEnum = (typeof ScheduleScalarFieldEnum)[keyof typ
 
 
 export const DoctorSchedulesScalarFieldEnum = {
-  id: 'id',
   doctorId: 'doctorId',
   scheduleId: 'scheduleId',
   isBooked: 'isBooked',

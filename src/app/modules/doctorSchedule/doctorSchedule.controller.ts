@@ -46,5 +46,50 @@ export const DoctorScheduleController = {
         }
     ),
 
+    //! get my doc schedule
+    getMyDoctSchedule: catchAsyc(
+        async (req: Request, res: Response) => {
+            console.log("----REEEEED Body ", req.body)
+            const user = req.user
+            const doctSchedule = await DoctorScheduleService.getMyDoctorSchedule(user, req.params as IQueryParams);
+            sendResponse(res, {
+                httpStatusCode: status.OK,
+                success: true,
+                message: "Doctor Schedule retrieved successfully!!",
+                result: doctSchedule,
+                meta: doctSchedule.meta
+            })
+        }
+    ),
+
+    //! get all doc schedule
+    getAllDoctSchedule: catchAsyc(
+        async (req: Request, res: Response) => {
+            console.log("----REEEEED Body ", req.body)
+            const doctSchedule = await DoctorScheduleService.getAllDoctorSchedule(req.params as IQueryParams);
+            sendResponse(res, {
+                httpStatusCode: status.OK,
+                success: true,
+                message: "Doctor Schedule retrieved successfully!!",
+                result: doctSchedule,
+                meta: doctSchedule.meta
+            })
+        }
+    ),
+    //! get all doc schedule
+    getDoctScheduleById: catchAsyc(
+        async (req: Request, res: Response) => {
+            const doctorId = req.params.doctorId;
+            const scheduleId = req.params.scheduleId;
+            const doctSchedule = await DoctorScheduleService.getDoctorScheduleById(doctorId as string, scheduleId as string);
+            sendResponse(res, {
+                httpStatusCode: status.OK,
+                success: true,
+                message: "Doctor Schedule retrieved successfully!!",
+                result: doctSchedule,
+                // meta: doctSchedule.
+            })
+        }
+    ),
 
 };
