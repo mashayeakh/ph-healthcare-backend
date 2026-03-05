@@ -5,6 +5,7 @@ import { UserRouter } from '../modules/user/user.route';
 import { DoctorRouter } from '../modules/doctor/doctor.route';
 import { AdminRouter } from '../modules/admin/admin.route';
 import { SuperAdminRouter } from '../modules/superAmin/superAdmin.route';
+import { ScheduleRouter } from '../modules/schedule/schedule.route';
 
 const route = express();
 
@@ -43,6 +44,18 @@ route.use(
 route.use(
     "/super-admin",
     SuperAdminRouter
+);
+
+//!schedule
+route.use(
+    "/schedule",
+    ScheduleRouter
+);
+
+//!doctor-schedule
+route.use(
+    "/doctor-schedules",
+    ScheduleRouter
 );
 
 

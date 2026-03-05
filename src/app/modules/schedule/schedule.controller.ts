@@ -9,6 +9,8 @@ import status from "http-status";
 import streamifier from "streamifier";
 import { cloudinaryUpload } from "../../config/cloudinary.config";
 import { ScheduleService } from "./schedule.service";
+import { Schedule } from '@prisma/prisma/client';
+import { IQueryParams } from "@/app/interfaces/query.interface";
 
 export const ScheduleController = {
 
@@ -29,50 +31,51 @@ export const ScheduleController = {
     ),
 
 
-    // //!get specialty
-    // getAllSpecialty: catchAsyc(
-    //     async (req: Request, res: Response) => {
-    //         const _result = await SpecialtyService.getAllSpecialty()
+    // //!get schedules
+    getAllSchedules: catchAsyc(
+        async (req: Request, res: Response) => {
+            const _result = await ScheduleService.getAllSchedules(req.query as IQueryParams);
 
-    //         sendResponse(res, {
-    //             httpStatusCode: status.OK,
-    //             success: true,
-    //             message: "Specialty fetched successfully!!",
-    //             result: {
-    //                 count: _result.length,
-    //                 data: _result
-    //             }
-    //         })
-    //     }
-    // ),
-
-
-    // //!delete specialty
-    // deleteSpecialty: catchAsyc(
-    //     async (req: Request, res: Response) => {
-    //         // const result = await SpecialtyService.deleteSepcialty(req.params.id as string)
-    //         res.status(status.OK).json({
-    //             success: true,
-    //             message: "Specialty deleted Succesfully",
-    //             data: await SpecialtyService.deleteSepcialty(req.params.id as string)
-    //         })
-
-    //     }
-    // ),
+            sendResponse(res, {
+                httpStatusCode: status.OK,
+                success: true,
+                message: "Schedule fetched successfully!!",
+                result: {
+                    data: _result.data,
+                    meta: _result.meta
+                }
+            })
+        }
+    ),
 
 
-    // //!edit specialty
-    // editSpecialty: catchAsyc(
-    //     async (req: Request, res: Response) => {
-    //         const payload = req.body;
-    //         const { id } = req.params;
-    //         console.log("specialty to be edited", payload);
-    //         console.log("specialty id found", id);
-    //         res.status(status.OK).json({
-    //             success: true,
-    //             message: "Edited successfully",
-    //             data: await SpecialtyService.editSpecialty(id as string, payload)
-    //         })
-    //     }
-    // )
+    // //!get schedule by id
+    getScheduleById: catchAsyc(
+        async (req: Request, res: Response) => {
+            const schedule = await ScheduleService.getScheduleById(req.params.id as string);
+            sendResponse(res, {
+                httpStatusCode: status.OK,
+                success: true,
+                message: "Schedule fetched successfully",
+                result: schedule
+            })
+
+        }
+    ),
+
+
+    // //!update schedule
+    updateSchedule: catchAsyc(
+        async (req: Request, res: Response) => {
+            const payload = req.body;
+            const { id } = req.params;
+            console.log("schedule to be updated", payload);
+            console.log("schedule id found", id);
+            res.status(status.OK).json({
+                success: true,
+                message: "Updated successfully",
+                data: await ScheduleService.updateSchedule(id as string, payload)
+            })
+        }
+    )
 };

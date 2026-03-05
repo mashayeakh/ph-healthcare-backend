@@ -11,39 +11,26 @@ import { Role } from '@prisma/prisma/enums';
 import { checkAuth } from '@/app/middleware/checkAuth';
 import multer from 'multer';
 import { multerUpload } from '@/app/config/multer.config';
-import { ScheduleController } from './schedule.controller';
 import { validateAuthorizationCode } from 'better-auth';
 import { validateReq } from '@/app/middleware/validateReq';
 import { createDoctorZodSchema } from '../user/user.validation';
-import { createScheduleValidationSchema } from './schedule.validation';
+import { Doctor } from '@prisma/prisma/client';
+import { DoctorScheduleController } from './doctorSchedule.controller';
 const route = express();
 
-//!Create schedule
+//!Create doctor schedule
 route.post(
-    "/",
-    // checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
-    validateReq(createScheduleValidationSchema),
-    ScheduleController.scheduleCreate
-);
-
-// //! get all schedules
-route.get(
-    "/",
-    // checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
-    ScheduleController.getAllSchedules
-);
-
-// //! delete any specialty based on id
-route.delete(
-    "/:id",
-    ScheduleController.getScheduleById
-);
-
-// //!update any specialty based on id
-route.put(
-    "/:id",
-    ScheduleController.updateSchedule
+    "/create-my-doctor-schedule",
+    checkAuth(Role.DOCTOR),
+    DoctorScheduleController.createMyDoctSchedule
 )
+//! Update doctor schedule
+route.patch(
+    "/update-my-doctor-schedule",
+    checkAuth(Role.DOCTOR),
+    DoctorScheduleController.updateMyDoctSchedule
+)
+
 
 
 
