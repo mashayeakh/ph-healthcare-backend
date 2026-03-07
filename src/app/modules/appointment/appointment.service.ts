@@ -2,12 +2,15 @@ import { addHours, addMinutes, format } from "date-fns";
 import { prisma } from "../../lib/prisma";
 import { IQueryParams } from "@/app/interfaces/query.interface";
 import { QueryBuilder } from "@/app/utils/queryBuilder";
-import { DoctorSchedules, Prisma, Schedule } from "@prisma/prisma/client";
+import { AppointmentStatus, DoctorSchedules, Prisma, Role, Schedule } from "@prisma/prisma/client";
 import { IRequestUser } from "@/app/interfaces/requestUserInterface";
 import { doctorScheduleFilterableFields, doctorScheduleIncludeConfig } from "./appointment.constant";
 import { doctorSearchableFields } from "../doctor/doct.constant";
 import { IBookAppointmentPayload } from "./dto/createBookAppiontmentDto";
 import { uuidv7 } from "zod";
+import { IUpdateDoctorsSchedulePayload } from "../doctorSchedule/dto/createDocScheduleDto";
+import status from "http-status";
+import { AppError } from "@/app/errorHelpers/AppError";
 
 
 export const AppointmentService = {
@@ -122,42 +125,149 @@ export const AppointmentService = {
         return result
     },
 
-    //get my doctor schedule
-    async getMyDoctorSchedule(user: IRequestUser, query: IQueryParams) {
-        // find the doctor data
-        const doctorData = await prisma.doctor.findUniqueOrThrow({
+    //!get my doctor schedule
+    async getMyAppiontments(user: IRequestUser, query: IQueryParams) {
+
+        // find the patient data
+        const patientData = await prisma.patient.findUnique({
             where: {
-                email: user.email
+                email: user?.email
             }
         })
 
-        // create the query builder
-        const queryBuilder = new QueryBuilder<DoctorSchedules, Prisma.DoctorSchedulesWhereInput, Prisma.DoctorSchedulesInclude>(prisma.doctorSchedules, {
-            doctorId: doctorData.id,
-            ...query
-        },
-            {
-                filterableFields: doctorScheduleFilterableFields,
-                searchableFields: doctorSearchableFields
+
+        // find the doctor data
+        const doctorData = await prisma.doctor.findUnique({
+            where: {
+                email: user?.email
             }
-        )
+        })
 
-        const doctorSchedules = await queryBuilder
-            .search()
-            .filter()
-            .paginate()
-            .include({
-                schedule: true,
+
+        let appointments = [];
+
+        if (patientData) {
+            // appointnment and push in appiontmnts
+            appointments = await prisma.appointment.findMany({
+                where: {
+                    patientId: patientData.id
+                },
+                include: {
+                    doctor: true,
+                    schedule: true,
+                }
             })
-            .fields()
-            .sort()
-            .fields()
-            .dynamicInclude(doctorScheduleIncludeConfig)
-            .execute()
-        return doctorSchedules;
-
-
+        } else if (doctorData) {
+            // appointnment and push in appiontmnts
+            appointments = await prisma.appointment.findMany({
+                where: {
+                    doctorId: doctorData.id
+                },
+                include: {
+                    patient: true,
+                    schedule: true,
+                }
+            })
+        } else {
+            throw new Error("User not found");
+        }
     },
+
+
+    //! change appiontment Status
+    async changeAppiontment(
+        appiontmentId: string,
+        appiontmentStatus: AppointmentStatus,
+        user: IRequestUser
+    ) {
+        //find the appiontment
+        const appiontmentData = await prisma.appointment.findUniqueOrThrow({
+            where: {
+                id: appiontmentId,
+            },
+            include: {
+                doctor: true,
+            }
+        })
+
+        if (user?.role === Role.DOCTOR) {
+            if (!(user?.email === appiontmentData.doctor.email))
+                throw new AppError(status.BAD_REQUEST, "This is not your appointment")
+        }
+
+        return await prisma.appointment.update({
+            where: {
+                id: appiontmentId
+            },
+            data: {
+                status: appiontmentStatus
+            }
+        })
+    },
+
+    //!get my single appiontment
+    async getMySingleAppiontment(appointmentId: string, user: IRequestUser) {
+        const patientData = await prisma.patient.findUnique({
+            where: {
+                email: user?.email
+            }
+        });
+
+        const doctorData = await prisma.doctor.findUnique({
+            where: {
+                email: user?.email
+            }
+        });
+
+        let appointment;
+
+        if (patientData) {
+            appointment = await prisma.appointment.findFirst({
+                where: {
+                    id: appointmentId,
+                    patientId: patientData.id
+                },
+                include: {
+                    doctor: true,
+                    schedule: true
+                }
+            });
+        } else if (doctorData) {
+            appointment = await prisma.appointment.findFirst({
+                where: {
+                    id: appointmentId,
+                    doctorId: doctorData.id
+                },
+                include: {
+                    patient: true,
+                    schedule: true
+                }
+            });
+        }
+
+        if (!appointment) {
+            throw new AppError(status.NOT_FOUND, "Appointment not found");
+        }
+
+        return appointment;
+    },
+
+    //!get all Appiontments
+    async getAllAppiontments() {
+        const appointments = await prisma.appointment.findMany({
+            include: {
+                doctor: true,
+                patient: true,
+                schedule: true
+            }
+        });
+        return appointments;
+    },
+
+
+
+
+
     // get all doctor schedule
     async getAllDoctorSchedule(query: IQueryParams) {
 
