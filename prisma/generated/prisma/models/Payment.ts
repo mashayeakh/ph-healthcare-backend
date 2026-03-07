@@ -237,7 +237,7 @@ export type PaymentWhereInput = {
   NOT?: Prisma.PaymentWhereInput | Prisma.PaymentWhereInput[]
   id?: Prisma.StringFilter<"Payment"> | string
   amount?: Prisma.FloatFilter<"Payment"> | number
-  transactionId?: Prisma.StringFilter<"Payment"> | string
+  transactionId?: Prisma.UuidFilter<"Payment"> | string
   stripeEventId?: Prisma.StringNullableFilter<"Payment"> | string | null
   status?: Prisma.EnumPaymentStatusFilter<"Payment"> | $Enums.PaymentStatus
   paymentGatewayData?: Prisma.JsonNullableFilter<"Payment">
@@ -299,7 +299,7 @@ export type PaymentScalarWhereWithAggregatesInput = {
   NOT?: Prisma.PaymentScalarWhereWithAggregatesInput | Prisma.PaymentScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Payment"> | string
   amount?: Prisma.FloatWithAggregatesFilter<"Payment"> | number
-  transactionId?: Prisma.StringWithAggregatesFilter<"Payment"> | string
+  transactionId?: Prisma.UuidWithAggregatesFilter<"Payment"> | string
   stripeEventId?: Prisma.StringNullableWithAggregatesFilter<"Payment"> | string | null
   status?: Prisma.EnumPaymentStatusWithAggregatesFilter<"Payment"> | $Enums.PaymentStatus
   paymentGatewayData?: Prisma.JsonNullableWithAggregatesFilter<"Payment">

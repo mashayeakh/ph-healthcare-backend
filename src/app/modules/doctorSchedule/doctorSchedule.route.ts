@@ -31,6 +31,12 @@ route.patch(
     DoctorScheduleController.updateMyDoctSchedule
 )
 
+//! all 
+route.get(
+    "/my-doctor-schedule",
+    checkAuth(Role.DOCTOR),
+    DoctorScheduleController.getMyDoctSchedule
+)
 
 
 
