@@ -53,6 +53,13 @@ app.set("views", viewsPath);
 // console.log('Express views directory:', app.get('views'));
 
 
+//? stripe webhook
+app.post("/webhook", express.raw({ type: "application/json" }), async (req: Request, res: Response) => {
+    console.log("Webhook received :", req.body);
+    res.status(200).json({ received: true })
+})
+
+
 
 
 

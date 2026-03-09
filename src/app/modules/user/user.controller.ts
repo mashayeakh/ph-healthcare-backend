@@ -11,7 +11,7 @@ export const UserController = {
     //!Doctor
     createDoctorUser: catchAsyc(
         async (req: Request, res: Response) => {
-            console.log("** \nhit in controller");
+            // console.log("** \nhit in controller");
             console.log(req.body)
             // const payload = req.body;
             // console.log("Controller payload = ", payload)
