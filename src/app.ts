@@ -12,6 +12,7 @@ import { auth } from './app/lib/auth';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import qs from 'qs';
+import { PaymentController } from './app/modules/payment/payment.controller';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -54,10 +55,7 @@ app.set("views", viewsPath);
 
 
 //? stripe webhook
-app.post("/webhook", express.raw({ type: "application/json" }), async (req: Request, res: Response) => {
-    console.log("Webhook received :", req.body);
-    res.status(200).json({ received: true })
-})
+app.post("/webhook", express.raw({ type: "application/json" }), PaymentController.handleStripeWebhookEvent)
 
 
 
