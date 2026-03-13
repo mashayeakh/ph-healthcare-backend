@@ -13,6 +13,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import qs from 'qs';
 import { PaymentController } from './app/modules/payment/payment.controller';
+import cron from "node-cron"
+import { AppointmentService } from './app/modules/appointment/appointment.service';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -86,6 +88,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+
+//it calls the cron job every 25 min to cancel unpaid appointments
+cron.schedule("*/25 * * * *", async () => {
+    try {
+        console.log("Running cron job to cancel unpaid appiontments...");
+        await AppointmentService.cancelUnpaidAppointments();
+    } catch (error: any) {
+        console.error("Error occurreed while canceling unpaid appointments :", error.message)
+    }
+})
 
 
 

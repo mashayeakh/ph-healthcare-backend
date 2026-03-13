@@ -526,7 +526,64 @@ export const AppointmentService = {
     },
 
     //! cancle uppaid appiointment
-    async cancelUnpaidAppointment() {
+    async cancelUnpaidAppointments() {
+        // find all appiontment which are unpaid and created 30 minutes ago
+
+        const thirtyMinutesAge = new Date(Date.now() - 30 * 60 * 1000);
+
+        // find all the unpaid appiontments which are craeted less than 30 mins ago
+        const unpaidAppointmentsThatAreOver30MinutesOld = await prisma.appointment.findMany({
+            where: {
+                status: AppointmentStatus.SCHEDULED,
+                createdAt: {
+                    lte: thirtyMinutesAge
+                },
+                paymentStatus: PaymentStatus.UNPAID
+            }
+        })
+
+        // cancel all the appiontments
+        const appointmentToCancelIds = unpaidAppointmentsThatAreOver30MinutesOld.map((appointment => appointment.id));
+
+        console.log("appointment to cancel", appointmentToCancelIds);
+
+        //run a tarnsation to update the appointment status "Cancel"
+
+        await prisma.$transaction(async (tx) => {
+            await tx.appointment.updateMany({
+                where: {
+                    id: {
+                        in: appointmentToCancelIds,
+                    },
+                },
+                data: {
+                    status: AppointmentStatus.CANCELED
+                }
+            })
+
+            //delete the payment data
+            await tx.payment.deleteMany({
+                where: {
+                    appointmentId: { in: appointmentToCancelIds }
+                }
+            })
+
+            // now if the appiontment is canceled then the doctor schedule should be available again. so we need to update the doctor schedule data using loop
+            for (const unpaidAppointment of unpaidAppointmentsThatAreOver30MinutesOld) {
+                // Update the doctor schedule data
+                await tx.doctorSchedules.update({
+                    where: {
+                        doctorId_scheduleId: {
+                            doctorId: unpaidAppointment.doctorId,
+                            scheduleId: unpaidAppointment.scheduleId
+                        },
+                    },
+                    data: {
+                        isBooked: false,
+                    }
+                })
+            }
+        })
 
     }
 }
