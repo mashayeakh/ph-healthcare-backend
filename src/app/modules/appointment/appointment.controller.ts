@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import status from "http-status";
 import { AppointmentService } from "./appointment.service";
 import { catchAsyc } from "@/app/shared/catchAsync";
+import { IQueryParams } from "@/app/interfaces/query.interface";
 
 
 const bookAppointment = catchAsyc(async (req: Request, res: Response) => {
@@ -17,9 +18,12 @@ const bookAppointment = catchAsyc(async (req: Request, res: Response) => {
     }); 1
 });
 
+
+    //!pay mlater
+
 const getMyAppointments = catchAsyc(async (req: Request, res: Response) => {
     const user = req.user;
-    const appointments = await AppointmentService.getMyAppointments(user);
+    const appointments = await AppointmentService.getMyAppiontments(user, req.query as IQueryParams);
     sendResponse(res, {
         success: true,
         httpStatusCode: status.OK,
@@ -33,7 +37,7 @@ const changeAppointmentStatus = catchAsyc(async (req: Request, res: Response) =>
     const payload = req.body;
     const user = req.user;
 
-    const updatedAppointment = await AppointmentService.changeAppointmentStatus(appointmentId as string, payload, user);
+    const updatedAppointment = await AppointmentService.changeAppiontment(appointmentId as string, payload, user);
     sendResponse(res, {
         success: true,
         httpStatusCode: status.OK,
@@ -46,7 +50,7 @@ const getMySingleAppointment = catchAsyc(async (req: Request, res: Response) => 
     const appointmentId = req.params.id;
     const user = req.user;
 
-    const appointment = await AppointmentService.getMySingleAppointment(appointmentId as string, user);
+    const appointment = await AppointmentService.getMySingleAppiontment(appointmentId as string, user);
     sendResponse(res, {
         success: true,
         httpStatusCode: status.OK,
@@ -56,7 +60,7 @@ const getMySingleAppointment = catchAsyc(async (req: Request, res: Response) => 
 });
 
 const getAllAppointments = catchAsyc(async (req: Request, res: Response) => {
-    const appointments = await AppointmentService.getAllAppointments();
+    const appointments = await AppointmentService.getAllAppiontments();
     sendResponse(res, {
         success: true,
         httpStatusCode: status.OK,

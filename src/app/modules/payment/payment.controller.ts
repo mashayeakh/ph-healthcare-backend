@@ -3,8 +3,8 @@ import { catchAsyc } from "@/app/shared/catchAsync";
 import { sendResponse } from "@/app/utils/sendResponse";
 import { Response, Request } from 'express';
 import status from "http-status";
-import Stripe from "stripe";
 import { PaymentService } from "./payment.service";
+import { stripe } from "@/app/config/stripe.config";
 
 export const PaymentController = {
     //handling strip webhook event
@@ -29,7 +29,7 @@ export const PaymentController = {
             //now construct the webhook 
             let event;
             try {
-                const event = Stripe.webhooks.constructEvent(req.body, signature, webhookSecret);
+                const event = stripe.webhooks.constructEvent(req.body, signature, webhookSecret);
             } catch (error) {
                 console.error("Error processing stripe webhook", error);
                 return res.status(status.BAD_REQUEST).json({
