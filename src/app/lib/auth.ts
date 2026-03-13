@@ -95,6 +95,18 @@ export const auth = betterAuth({
                         }
                     })
 
+                    // if user does not exist
+                    if (!user) {
+                        console.error(`User with email ${email} not found for sending OTP`);
+                        return;
+                    }
+
+                    //if user exist but user role is super admin then do not send email.
+                    if (user && user.role === Role.SUPER_ADMIN) {
+                        console.log(`User with email ${email} is a super admin. Skipping sending OTP.`);
+                        return;
+                    }
+
                     if (user && !user.emailVerified) {
                         //now send the eamil with otp
                         sendEmail({

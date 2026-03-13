@@ -76,19 +76,7 @@ app.use(cors({
     credentials: true, // Important for cookies
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization",]
-}));
-
-
-app.use("/api/auth/", toNodeHandler(auth))
-
-// Enable URL-encoded form data parsing
-app.use(express.urlencoded({ extended: true }));
-
-
-app.use(express.json());
-app.use(cookieParser());
-app.use(express.urlencoded({ extended: true }));
-
+})); 
 //it calls the cron job every 25 min to cancel unpaid appointments
 cron.schedule("*/25 * * * *", async () => {
     try {
