@@ -53,4 +53,4 @@ route.get(
 )
 
 //!delete 
-export const ScheduleRouter = route;
+export const DoctorScheduleRouter = route;

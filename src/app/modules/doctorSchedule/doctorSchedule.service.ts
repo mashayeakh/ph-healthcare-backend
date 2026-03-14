@@ -28,11 +28,21 @@ export const DoctorScheduleService = {
         console.log("Doctor Schedule Data", doctorScheduleData)
 
         //create doctor schedule data
-        const result = await prisma.doctorSchedules.createMany({
+        await prisma.doctorSchedules.createMany({
             data: doctorScheduleData
         })
 
-        console.log("--- resul ", result)
+        const result = await prisma.doctorSchedules.findMany({
+            where: {
+                doctorId: doctorData.id,
+                scheduleId: {
+                    in: payload.scheduleIds
+                }
+            },
+            include: {
+                schedule: true
+            }
+        })
 
         return result;
 
