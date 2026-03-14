@@ -93,9 +93,12 @@ export const AuthService = {
     },
 
 
-    //!patient login
+    //! login user
 
-    async loginPatient(payload: ILoginUserPayload) {
+    async loginUser(payload: ILoginUserPayload) {
+
+        console.log("payload ", payload.email)
+        console.log("payload ", payload.password)
 
         const { email, password } = payload
 

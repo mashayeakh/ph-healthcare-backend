@@ -16,6 +16,7 @@ route.use(
     SpecialtyRouter
 );
 
+
 //!auth
 route.use(
     "/auth",

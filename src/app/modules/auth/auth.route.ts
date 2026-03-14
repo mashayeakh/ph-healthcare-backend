@@ -3,7 +3,7 @@ import { AuthController } from './auth.controller';
 import { checkAuth } from '@/app/middleware/checkAuth';
 import { Role } from '@prisma/prisma/enums';
 import { router } from 'better-auth/api';
-const route = express();
+const route = express.Router();
 
 
 //!create patient
@@ -15,6 +15,12 @@ route.post(
 //! login patient
 route.post(
     "/patient/login",
+    AuthController.loginUser
+)
+
+//! general login
+route.post(
+    "/login",
     AuthController.loginUser
 )
 
@@ -80,7 +86,6 @@ route.get(
     "/oauth/error",
     AuthController.handleOAuthError
 )
-
 
 
 export const AuthRouter = route;

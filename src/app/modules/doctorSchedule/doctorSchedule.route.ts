@@ -31,13 +31,26 @@ route.patch(
     DoctorScheduleController.updateMyDoctSchedule
 )
 
-//! all 
+//! my-doctor-schedules 
 route.get(
-    "/my-doctor-schedule",
+    "/my-doctor-schedules",
     checkAuth(Role.DOCTOR),
     DoctorScheduleController.getMyDoctSchedule
 )
 
+//! all doct schedules
+route.get(
+    "/",
+    checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+    DoctorScheduleController.getAllDoctSchedule
+)
 
+//!  get doctor-schedule by id
+route.get(
+    "/:doctorId/schedule/:scheduleId",
+    checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+    DoctorScheduleController.getDoctScheduleById
+)
 
+//!delete 
 export const ScheduleRouter = route;

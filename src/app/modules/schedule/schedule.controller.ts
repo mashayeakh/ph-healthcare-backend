@@ -25,7 +25,7 @@ export const ScheduleController = {
                 httpStatusCode: status.OK,
                 success: true,
                 message: "Schedule created successfully!!",
-                // result:created
+                result: created
             })
         }
     ),

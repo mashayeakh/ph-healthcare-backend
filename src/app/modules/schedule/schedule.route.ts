@@ -21,7 +21,7 @@ const route = express();
 //!Create schedule
 route.post(
     "/",
-    // checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+    checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
     validateReq(createScheduleValidationSchema),
     ScheduleController.scheduleCreate
 );
@@ -31,6 +31,13 @@ route.get(
     "/",
     // checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
     ScheduleController.getAllSchedules
+);
+
+//! get by id
+route.get(
+    "/:id",
+    checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+    ScheduleController.getScheduleById
 );
 
 // //! delete any specialty based on id

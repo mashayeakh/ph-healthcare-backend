@@ -66,7 +66,11 @@ export const AuthController = {
 
     loginUser: catchAsyc(
         async (req: Request, res: Response) => {
-            const result = await AuthService.loginPatient(req.body)
+            const result = await AuthService.loginUser(req.body)
+
+            console.log("login user ", result)
+
+
             const {
                 accessToken,
                 refreshToken,
