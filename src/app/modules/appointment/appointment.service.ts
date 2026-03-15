@@ -7,12 +7,13 @@ import { IRequestUser } from "@/app/interfaces/requestUserInterface";
 import { doctorScheduleFilterableFields, doctorScheduleIncludeConfig } from "./appointment.constant";
 import { doctorSearchableFields } from "../doctor/doct.constant";
 import { IBookAppointmentPayload } from "./dto/createBookAppiontmentDto";
-import { uuidv7 } from "zod";
 import { IUpdateDoctorsSchedulePayload } from "../doctorSchedule/dto/createDocScheduleDto";
+import { v7 as uuidv7 } from "uuid";
 import status from "http-status";
 import { AppError } from "@/app/errorHelpers/AppError";
 import { stripe } from './../../config/stripe.config';
 import { envVars } from "@/app/config/env";
+// import { uuidv7 } from 'zod';
 
 
 export const AppointmentService = {
@@ -22,57 +23,46 @@ export const AppointmentService = {
     async createBookAppiontment(payload: IBookAppointmentPayload, user: IRequestUser) {
 
         //patient data 
-        const patienData = await prisma.patient.findFirstOrThrow({
+        const patientData = await prisma.patient.findUniqueOrThrow({
             where: {
-                email: user.email
+                email: user.email,
             }
-        })
+        });
 
-        //doct data
-        const doctorData = await prisma.doctor.findFirstOrThrow({
+        const doctorData = await prisma.doctor.findUniqueOrThrow({
             where: {
                 id: payload.doctorId,
-                isDeleted: false
+                isDeleted: false,
             }
-        })
+        });
 
-
-        //schedule data
-        const scheduleData = await prisma.schedule.findFirstOrThrow({
+        const scheduleData = await prisma.schedule.findUniqueOrThrow({
             where: {
                 id: payload.scheduleId,
             }
-        })
+        });
 
-
-        //doct schedule beir korchi
         const doctorSchedule = await prisma.doctorSchedules.findUniqueOrThrow({
             where: {
                 doctorId_scheduleId: {
                     doctorId: doctorData.id,
-                    scheduleId: scheduleData.id
+                    scheduleId: scheduleData.id,
                 }
             }
-        })
+        });
 
-        //video calling id
-        const videoCallingId = String(uuidv7())
+        const videoCallingId = String(uuidv7());
 
-        //using transaction to make appointment and payment together
         const result = await prisma.$transaction(async (tx) => {
-
-            //appointment data
             const appointmentData = await tx.appointment.create({
                 data: {
                     doctorId: payload.doctorId,
-                    patientId: patienData.id,
+                    patientId: patientData.id,
                     scheduleId: doctorSchedule.scheduleId,
-                    videoCallingId: videoCallingId
+                    videoCallingId,
                 }
-            })
+            });
 
-
-            //once appoointment is done creating, update the doctor Schedules
             await tx.doctorSchedules.update({
                 where: {
                     doctorId_scheduleId: {
@@ -81,28 +71,24 @@ export const AppointmentService = {
                     }
                 },
                 data: {
-                    isBooked: true
+                    isBooked: true,
                 }
-            })
+            });
 
-            //todo payment integration will be here. 
+            //TODO : Payment Integration will be here
 
-            //get the transaction id
-            const transationId = String(uuidv7())
+            const transactionId = String(uuidv7());
 
-            //craete the payment
             const paymentData = await tx.payment.create({
                 data: {
                     appointmentId: appointmentData.id,
                     amount: doctorData.appointmentFee,
-                    transactionId: transationId,
+                    transactionId
                 }
-            })
-
-            //create the strip session
+            });
 
             const session = await stripe.checkout.sessions.create({
-                payment_method_types: ["card"],
+                payment_method_types: ['card'],
                 mode: 'payment',
                 line_items: [
                     {
@@ -116,29 +102,30 @@ export const AppointmentService = {
                         quantity: 1,
                     }
                 ],
-
                 metadata: {
                     appointmentId: appointmentData.id,
                     paymentId: paymentData.id,
                 },
-                success_url: `${envVars.FRONTEND_URL}/dashboard/payment/payment-success`,
 
-                // cancel_url: `${envVars.FRONTEND_URL}/dashboard/payment/payment-failed`
+                // success_url: `${envVars.FRONTEND_URL}/dashboard/payment/payment-success?appointment_id=${appointmentData.id}&payment_id=${appointmentData.payment.id}}`,
 
-                cancel_url: `${envVars.FRONTEND_URL}/dashboard/appointments`
+                success_url: `${envVars.FRONTEND_URL}/dashboard/payment/payment-success?appointment_id=${appointmentData.id}&payment_id=${paymentData.id}`,
+
+                // cancel_url: `${envVars.FRONTEND_URL}/dashboard/payment/payment-failed`,
+                cancel_url: `${envVars.FRONTEND_URL}/dashboard/appointments?error=payment_cancelled`,
             })
 
             return {
                 appointmentData,
                 paymentData,
-                paymenUrl: session.url,
-            }
+                paymentUrl: session.url,
+            };
+        });
 
-        })
         return {
             appointment: result.appointmentData,
             payment: result.paymentData,
-            paymentUrl: result.paymenUrl
+            paymentUrl: result.paymentUrl,
         };
     },
 

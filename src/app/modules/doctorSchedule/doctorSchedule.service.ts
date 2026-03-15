@@ -66,6 +66,7 @@ export const DoctorScheduleService = {
             //delete doctor schedule data
             await tx.doctorSchedules.deleteMany({
                 where: {
+                    isBooked: false,
                     doctorId: doctorData.id,
                     scheduleId: {
                         in: deleteIds

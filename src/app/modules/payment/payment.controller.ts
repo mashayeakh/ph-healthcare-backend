@@ -29,7 +29,8 @@ export const PaymentController = {
             //now construct the webhook 
             let event;
             try {
-                const event = stripe.webhooks.constructEvent(req.body, signature, webhookSecret);
+                event = stripe.webhooks.constructEvent(req.body, signature, webhookSecret);
+                console.log("Stripe event type:", event.type);
             } catch (error) {
                 console.error("Error processing stripe webhook", error);
                 return res.status(status.BAD_REQUEST).json({
