@@ -1915,8 +1915,8 @@ export const MedicalReportScalarFieldEnum = {
   id: 'id',
   patientId: 'patientId',
   appointmentId: 'appointmentId',
-  diagnosis: 'diagnosis',
-  treatment: 'treatment',
+  reportName: 'reportName',
+  reportLink: 'reportLink',
   followUpDate: 'followUpDate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
