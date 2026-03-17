@@ -1,7 +1,7 @@
 import { sendResponse } from "@/app/utils/sendResponse";
 import { Request, Response } from "express";
 import httpStatus from "http-status";
-import { ReivewService } from "./review.service";
+import { ReivewService } from "./prescription.service";
 import { catchAsyc } from "@/app/shared/catchAsync";
 
 

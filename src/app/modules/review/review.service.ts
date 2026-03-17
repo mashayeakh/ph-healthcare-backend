@@ -1,7 +1,7 @@
 import { IRequestUser } from "@/app/interfaces/requestUserInterface";
-import { ICreateReviewPayload } from "./review.interface";
+import { ICreateReviewPayload, IUpdateReviewPayload } from "./review.interface";
 import { prisma } from "@/app/lib/prisma";
-import { PaymentStatus } from "@prisma/prisma/enums";
+import { PaymentStatus, Role } from "@prisma/prisma/enums";
 import { AppError } from "@/app/errorHelpers/AppError";
 import status from "http-status";
 
@@ -74,5 +74,138 @@ export const ReivewService = {
         })
 
         return result
+    },
+
+    async getAllReviews() {
+        const reviews = await prisma.review.findMany({
+            include: {
+                doctor: true,
+                patient: true,
+                appointment: true
+            }
+        });
+
+        return reviews;
+    },
+
+    async myReviews(user: IRequestUser) {
+        const isUserExist = await prisma.user.findUnique({
+            where: {
+                email: user?.email
+            }
+        });
+        if (!isUserExist) {
+            throw new AppError(status.BAD_REQUEST, "Only patients can view their reviews");
+        }
+
+        if (isUserExist.role === Role.DOCTOR) {
+            const doctorData = await prisma.doctor.findUniqueOrThrow({
+                where: {
+                    email: user?.email
+                }
+            });
+            return await prisma.review.findMany({
+                where: {
+                    doctorId: doctorData.id
+                },
+                include: {
+                    patient: true,
+                    appointment: true
+                }
+            });
+        }
+    },
+
+    async deleteReview(user: IRequestUser, reviewId: string) {
+        const patientData = await prisma.patient.findUniqueOrThrow({
+            where: {
+                email: user?.email
+            }
+        });
+        const reviewData = await prisma.review.findUniqueOrThrow({
+            where: {
+                id: reviewId
+            }
+        });
+        if (!(patientData.id === reviewData.patientId)) {
+            throw new AppError(status.BAD_REQUEST, "This is not your review!")
+        }
+
+        const result = await prisma.$transaction(async (tx) => {
+            const deletedReview = await tx.review.delete({
+                where: {
+                    id: reviewId
+                }
+            });
+
+            const averageRating = await tx.review.aggregate({
+                where: {
+                    doctorId: deletedReview.doctorId
+                },
+                _avg: {
+                    rating: true
+                }
+            });
+
+            await tx.doctor.update({
+                where: {
+                    id: deletedReview.doctorId
+                },
+                data: {
+                    avgRating: averageRating._avg.rating as number
+                }
+            })
+            return deletedReview;
+        });
+
+        return result;
+    },
+
+    async updateReivew(user: IRequestUser, reviewId: string, payload: IUpdateReviewPayload) {
+        const patientData = await prisma.patient.findUniqueOrThrow({
+            where: {
+                email: user?.email
+            }
+        });
+        const reviewData = await prisma.review.findUniqueOrThrow({
+            where: {
+                id: reviewId
+            }
+        });
+        if (!(patientData.id === reviewData.patientId)) {
+            throw new AppError(status.BAD_REQUEST, "This is not your review!")
+        }
+        const result = await prisma.$transaction(async (tx) => {
+            const updatedReview = await tx.review.update({
+                where: {
+                    id: reviewId
+                },
+                data: {
+                    ...payload
+                }
+            });
+
+            const averageRating = await tx.review.aggregate({
+                where: {
+                    doctorId: reviewData.doctorId
+                },
+                _avg: {
+                    rating: true
+                }
+            });
+
+            await tx.doctor.update({
+                where: {
+                    id: updatedReview.doctorId
+                },
+                data: {
+                    avgRating: averageRating._avg.rating as number
+                }
+            })
+
+            return updatedReview;
+        });
+
+        return result;
     }
 }

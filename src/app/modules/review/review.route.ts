@@ -17,7 +17,7 @@ router.post(
     ReviewController.giveReview
 );
 
-router.get('/my-reviews', checkAuth(Role.PATIENT, Role.DOCTOR), ReviewController.myReviews);
+router.get('/my-reviews', checkAuth(Role.PATIENT, Role.DOCTOR), ReviewController.getAllReviews);
 
 router.patch('/:id', checkAuth(Role.PATIENT), validateReq(ReviewValidation.updateReviewZodSchema), ReviewController.updateReview);
 
