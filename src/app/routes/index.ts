@@ -8,6 +8,7 @@ import { SuperAdminRouter } from '../modules/superAmin/superAdmin.route';
 import { ScheduleRouter } from '../modules/schedule/schedule.route';
 import { DoctorScheduleRouter } from '../modules/doctorSchedule/doctorSchedule.route';
 import { AppointmentRoutes } from '../modules/appointment/appointment.route';
+import { PatientRouter } from '../modules/patient/patient.route';
 
 const route = express();
 
@@ -65,6 +66,12 @@ route.use(
 route.use(
     "/appointments",
     AppointmentRoutes
+);
+
+//!Patient Routes
+route.use(
+    "/patients",
+    PatientRouter
 );
 
 

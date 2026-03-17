@@ -71,7 +71,7 @@ export const PatientService = {
                     update: healthDataToSave,
                     create: {
                         patientId: patientData.id,
-                        ...healthDataToSave
+                        ...healthDataToSave 
                     }
                 })
             };
