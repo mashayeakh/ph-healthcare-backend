@@ -75,17 +75,17 @@ const givePrescription = async (user: IRequestUser, payload: ICreatePrescription
         });
 
         const fileName = `Prescription-${Date.now()}.pdf`;
-        const uploadedFile = await uploadFileToCloudinary(pdfBuffer, fileName);
-        const pdfUrl = uploadedFile.secure_url;
+        // const uploadedFile = await uploadFileToCloudinary(pdfBuffer, fileName);
+        // const pdfUrl = uploadedFile.secure_url;
 
-        const updatedPrescription = await tx.prescription.update({
-            where: {
-                id: result.id
-            },
-            data: {
-                pdfUrl
-            }
-        });
+        // const updatedPrescription = await tx.prescription.update({
+        //     where: {
+        //         id: result.id
+        //     },
+        //     data: {
+        //         pdfUrl
+        //     }
+        // });
 
         try {
             const patient = appointmentData.patient;
@@ -104,7 +104,7 @@ const givePrescription = async (user: IRequestUser, payload: ICreatePrescription
                     prescriptionId: result.id,
                     instructions: payload.instructions,
                     followUpDate: followUpDate.toLocaleDateString(),
-                    pdfUrl: pdfUrl
+                    // pdfUrl: pdfUrl
                 },
                 attachments: [
                     {
@@ -118,7 +118,7 @@ const givePrescription = async (user: IRequestUser, payload: ICreatePrescription
             console.log("Failed To send email notification for prescription", error);
         }
 
-        return updatedPrescription;
+        // return updatedPrescription;
     }, {
         maxWait: 15000,
         timeout: 20000,
@@ -171,7 +171,7 @@ const myPrescriptions = async (user: IRequestUser) => {
         return prescriptions;
     }
 
-
+    
 };
 
 const getAllPrescriptions = async () => {
